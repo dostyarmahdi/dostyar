@@ -105,12 +105,11 @@
 
         return (
             <div className="text-white min-h-screen relative bg-black">
-                {/* Opening Line Animation */}
+                {/* Opening Video Animation */}
                 <div 
-                    className="fixed left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
+                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
                     style={{
-                        top: lineExpanded ? '0' : '0',
-                        height: lineExpanded ? '100vh' : '4px',
+                        height: lineExpanded ? '100vh' : '8px',
                         zIndex: 50
                     }}
                 >
@@ -119,14 +118,12 @@
                         loop
                         muted
                         playsInline
-                        className="w-full object-cover"
+                        className="w-full h-full object-cover"
                         style={{
-                            filter: 'brightness(1.2)',
-                            height: '100vh',
-                            objectPosition: 'center top'
+                            filter: 'brightness(1.2)'
                         }}
                     >
-                        <source src="images/Galaxy Abstract Motion Background | Cosmic Loop.mov" type="video/mov" />
+                        <source src="images/opening-video.mov" type="video/mp4" />
                     </video>
                 </div>
 
@@ -267,17 +264,18 @@
                     <div className="space-y-6">
                         {/* Row 1 - Scrolls Left */}
                         <div 
-                            className="flex gap-4"
+                            className="flex gap-4 w-full"
                             style={{
-                                transform: `translateX(${-scrollY * 0.3}px)`
+                                transform: `translateX(${-scrollY * 0.3}px)`,
+                                willChange: 'transform'
                             }}
                         >
-                            {[...Array(20)].map((_, i) => (
+                            {Array.from({ length: 20 }, (_, i) => (
                                 <div 
                                     key={`row1-${i}`}
                                     className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
                                     style={{
-                                        backgroundImage: `url('https://images.unsplash.com/photo-${1485846234645 + i}-a62644f84728?w=400&q=80')`,
+                                        backgroundImage: `url('images/row1-frame${i + 1}.jpg')`,
                                         backgroundSize: 'cover',
                                         backgroundPosition: 'center'
                                     }}
@@ -287,17 +285,18 @@
 
                         {/* Row 2 - Scrolls Right */}
                         <div 
-                            className="flex gap-4"
+                            className="flex gap-4 w-full"
                             style={{
-                                transform: `translateX(${scrollY * 0.3}px)`
+                                transform: `translateX(${scrollY * 0.3}px)`,
+                                willChange: 'transform'
                             }}
                         >
-                            {[...Array(20)].map((_, i) => (
+                            {Array.from({ length: 20 }, (_, i) => (
                                 <div 
                                     key={`row2-${i}`}
                                     className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
                                     style={{
-                                        backgroundImage: `url('https://images.unsplash.com/photo-${1478720568477 + i}-152d9b164e26?w=400&q=80')`,
+                                        backgroundImage: `url('images/row2-frame${i + 1}.jpg')`,
                                         backgroundSize: 'cover',
                                         backgroundPosition: 'center'
                                     }}
@@ -307,17 +306,18 @@
 
                         {/* Row 3 - Scrolls Left */}
                         <div 
-                            className="flex gap-4"
+                            className="flex gap-4 w-full"
                             style={{
-                                transform: `translateX(${-scrollY * 0.3}px)`
+                                transform: `translateX(${-scrollY * 0.3}px)`,
+                                willChange: 'transform'
                             }}
                         >
-                            {[...Array(20)].map((_, i) => (
+                            {Array.from({ length: 20 }, (_, i) => (
                                 <div 
                                     key={`row3-${i}`}
                                     className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
                                     style={{
-                                        backgroundImage: `url('https://images.unsplash.com/photo-${1511671782779 + i}-c97d3d27a1d4?w=400&q=80')`,
+                                        backgroundImage: `url('images/row3-frame${i + 1}.jpg')`,
                                         backgroundSize: 'cover',
                                         backgroundPosition: 'center'
                                     }}
@@ -327,17 +327,18 @@
 
                         {/* Row 4 - Scrolls Right */}
                         <div 
-                            className="flex gap-4"
+                            className="flex gap-4 w-full"
                             style={{
-                                transform: `translateX(${scrollY * 0.3}px)`
+                                transform: `translateX(${scrollY * 0.3}px)`,
+                                willChange: 'transform'
                             }}
                         >
-                            {[...Array(20)].map((_, i) => (
+                            {Array.from({ length: 20 }, (_, i) => (
                                 <div 
                                     key={`row4-${i}`}
                                     className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
                                     style={{
-                                        backgroundImage: `url('https://images.unsplash.com/photo-${1514306191717 + i}-452ec28c7814?w=400&q=80')`,
+                                        backgroundImage: `url('images/row4-frame${i + 1}.jpg')`,
                                         backgroundSize: 'cover',
                                         backgroundPosition: 'center'
                                     }}
