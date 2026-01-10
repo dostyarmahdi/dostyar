@@ -21,6 +21,7 @@
     const CinematographerPortfolio = () => {
         const [scrollY, setScrollY] = useState(0);
         const [lineExpanded, setLineExpanded] = useState(true);
+        const [selectedProject, setSelectedProject] = useState(null);
         const workRefs = useRef([]);
 
         useEffect(() => {
@@ -42,12 +43,60 @@
         };
 
         const projects = [
-            { id: 1, title: "MIDNIGHT CITY", client: "Netflix Original", year: "2024", type: "Documentary Feature" },
-            { id: 2, title: "VELOCITY", client: "Nike Global", year: "2024", type: "Commercial Campaign" },
-            { id: 3, title: "ECHOES", client: "Apple Music", year: "2023", type: "Music Video" },
-            { id: 4, title: "SILENT WAVES", client: "HBO Documentary", year: "2023", type: "Short Film" },
-            { id: 5, title: "MODERN SPIRIT", client: "Vogue Fashion", year: "2023", type: "Fashion Film" },
-            { id: 6, title: "URBAN STORIES", client: "Independent", year: "2022", type: "Documentary Series" }
+            { 
+                id: 1, 
+                title: "MIDNIGHT CITY", 
+                client: "Netflix Original", 
+                year: "2024", 
+                type: "Documentary Feature", 
+                thumbnail: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&q=80", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
+            },
+            { 
+                id: 2, 
+                title: "VELOCITY", 
+                client: "Nike Global", 
+                year: "2024", 
+                type: "Commercial Campaign", 
+                thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" 
+            },
+            { 
+                id: 3, 
+                title: "ECHOES", 
+                client: "Apple Music", 
+                year: "2023", 
+                type: "Music Video", 
+                thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" 
+            },
+            { 
+                id: 4, 
+                title: "SILENT WAVES", 
+                client: "HBO Documentary", 
+                year: "2023", 
+                type: "Short Film", 
+                thumbnail: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" 
+            },
+            { 
+                id: 5, 
+                title: "MODERN SPIRIT", 
+                client: "Vogue Fashion", 
+                year: "2023", 
+                type: "Fashion Film", 
+                thumbnail: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" 
+            },
+            { 
+                id: 6, 
+                title: "URBAN STORIES", 
+                client: "Independent", 
+                year: "2022", 
+                type: "Documentary Series", 
+                thumbnail: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=800&q=80", 
+                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" 
+            }
         ];
 
         const workTitleProgress = Math.max(0, Math.min(1, (scrollY - window.innerHeight * 1.8) / 200));
@@ -56,60 +105,36 @@
 
         return (
             <div className="text-white min-h-screen relative bg-black">
-                {/* Opening Video Overlay */}
+                {/* Opening Line Animation */}
                 <div 
-                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
+                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden bg-gradient-to-r from-zinc-800 to-zinc-900"
                     style={{
                         height: lineExpanded ? '100vh' : '8px',
                         zIndex: 50
                     }}
-                >
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
-                        style={{
-                            filter: 'brightness(1.2)'
-                        }}
-                    >
-                        <source src="YOUR_OPENING_VIDEO_URL.mp4" type="video/mp4" />
-                        <source src="YOUR_OPENING_VIDEO_URL.webm" type="video/webm" />
-                    </video>
-                </div>
-                
-                <div 
-                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none"
-                    style={{
-                        height: lineExpanded ? '100vh' : '0vh',
-                        backgroundColor: 'transparent',
-                        zIndex: 15,
-                        mixBlendMode: 'difference'
-                    }}
                 />
 
-                {/* Hero Section - Black background with white text */}
+                {/* Hero Section */}
                 <section 
                     className="relative min-h-screen flex items-center justify-center overflow-hidden"
                     style={{
                         backgroundColor: '#000000',
-                        backgroundImage: `url('YOUR_HERO_BACKGROUND_IMAGE_URL')`,
+                        backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&q=80')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'
                     }}
                 >
-                    <div className="absolute inset-0 bg-black opacity-60" />
+                    <div className="absolute inset-0 bg-black opacity-40" />
                     
                     <div className="relative z-10 px-6 max-w-7xl w-full">
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+                        <div className="flex items-center justify-center gap-8">
                             {/* Portrait Image */}
                             <div 
-                                className="flex-shrink-0 w-40 h-60 md:w-48 md:h-72 rounded-lg overflow-hidden shadow-2xl"
+                                className="flex-shrink-0 w-28 h-28 rounded-lg overflow-hidden shadow-2xl"
                                 style={{
                                     opacity: Math.max(0, 1 - scrollY / 500),
                                     transition: 'opacity 0.8s ease-out',
-                                    backgroundImage: `url('YOUR_PORTRAIT_IMAGE_URL')`,
+                                    backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80')`,
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
                                     backgroundColor: '#3f3f46'
@@ -117,9 +142,9 @@
                             />
                             
                             {/* Name */}
-                            <div className="text-center md:text-left">
+                            <div>
                                 <h1 
-                                    className="text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-none mb-4"
+                                    className="text-6xl md:text-7xl font-bold tracking-tighter leading-none"
                                     style={{
                                         opacity: Math.max(0, 1 - scrollY / 500),
                                         transition: 'opacity 0.8s ease-out',
@@ -129,7 +154,7 @@
                                     JOHN
                                 </h1>
                                 <h1 
-                                    className="text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-none"
+                                    className="text-6xl md:text-7xl font-bold tracking-tighter leading-none"
                                     style={{
                                         opacity: Math.max(0, 1 - scrollY / 500),
                                         transition: 'opacity 0.8s ease-out',
@@ -221,6 +246,91 @@
                     </div>
                 </section>
 
+                {/* Film Strip Section */}
+                <section className="relative py-20 overflow-hidden">
+                    <div className="space-y-6">
+                        {/* Row 1 - Scrolls Left */}
+                        <div 
+                            className="flex gap-4"
+                            style={{
+                                transform: `translateX(${-scrollY * 0.3}px)`
+                            }}
+                        >
+                            {[...Array(20)].map((_, i) => (
+                                <div 
+                                    key={`row1-${i}`}
+                                    className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
+                                    style={{
+                                        backgroundImage: `url('https://images.unsplash.com/photo-${1485846234645 + i}-a62644f84728?w=400&q=80')`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center'
+                                    }}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Row 2 - Scrolls Right */}
+                        <div 
+                            className="flex gap-4"
+                            style={{
+                                transform: `translateX(${scrollY * 0.3}px)`
+                            }}
+                        >
+                            {[...Array(20)].map((_, i) => (
+                                <div 
+                                    key={`row2-${i}`}
+                                    className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
+                                    style={{
+                                        backgroundImage: `url('https://images.unsplash.com/photo-${1478720568477 + i}-152d9b164e26?w=400&q=80')`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center'
+                                    }}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Row 3 - Scrolls Left */}
+                        <div 
+                            className="flex gap-4"
+                            style={{
+                                transform: `translateX(${-scrollY * 0.3}px)`
+                            }}
+                        >
+                            {[...Array(20)].map((_, i) => (
+                                <div 
+                                    key={`row3-${i}`}
+                                    className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
+                                    style={{
+                                        backgroundImage: `url('https://images.unsplash.com/photo-${1511671782779 + i}-c97d3d27a1d4?w=400&q=80')`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center'
+                                    }}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Row 4 - Scrolls Right */}
+                        <div 
+                            className="flex gap-4"
+                            style={{
+                                transform: `translateX(${scrollY * 0.3}px)`
+                            }}
+                        >
+                            {[...Array(20)].map((_, i) => (
+                                <div 
+                                    key={`row4-${i}`}
+                                    className="flex-shrink-0 w-64 h-40 bg-zinc-800 rounded-lg"
+                                    style={{
+                                        backgroundImage: `url('https://images.unsplash.com/photo-${1514306191717 + i}-452ec28c7814?w=400&q=80')`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center'
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
                 {/* Featured Work Title */}
                 <section className="relative py-20 px-6 overflow-hidden">
                     <div className="relative z-10 max-w-7xl mx-auto">
@@ -274,18 +384,22 @@
                                         </div>
 
                                         <div 
-                                            className="md:w-80 h-48 flex-shrink-0 bg-zinc-900 relative overflow-hidden"
+                                            className="md:w-80 h-48 flex-shrink-0 bg-zinc-900 relative overflow-hidden cursor-pointer"
+                                            onClick={() => setSelectedProject(project)}
                                             style={{
                                                 transform: inView ? 'translateX(0)' : 'translateX(-150px)',
                                                 opacity: inView ? 1 : 0,
-                                                transition: 'all 1s ease-out 0.2s'
+                                                transition: 'all 1s ease-out 0.2s',
+                                                backgroundImage: `url('${project.thumbnail}')`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center'
                                             }}
                                         >
-                                            <div className="absolute inset-0 bg-gradient-to-br from-zinc-800 to-zinc-900 transform scale-100 group-hover:scale-110 transition-transform duration-700" />
+                                            <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
                                             <div className="absolute inset-0 flex items-center justify-center">
-                                                <div className="w-16 h-16 border-2 border-white opacity-20 group-hover:opacity-60 transition-opacity">
+                                                <div className="w-16 h-16 border-2 border-white opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all">
                                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                        <polygon points="5 3 19 12 5 21 5 3" fill="white" opacity="0.3"/>
+                                                        <polygon points="5 3 19 12 5 21 5 3" fill="white" opacity="0.8"/>
                                                     </svg>
                                                 </div>
                                             </div>
@@ -435,6 +549,35 @@
                 <footer className="relative z-10 border-t border-white border-opacity-10 py-8 px-6 text-center text-gray-600 text-sm tracking-wider">
                     <p>© 2024 JOHN SMITH CINEMATOGRAPHY. ALL RIGHTS RESERVED.</p>
                 </footer>
+
+                {/* Video Modal */}
+                {selectedProject && (
+                    <div 
+                        className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4"
+                        onClick={() => setSelectedProject(null)}
+                    >
+                        <div className="relative w-full max-w-6xl" onClick={(e) => e.stopPropagation()}>
+                            <button 
+                                onClick={() => setSelectedProject(null)}
+                                className="absolute -top-12 right-0 text-white text-4xl hover:text-gray-400 transition-colors"
+                            >
+                                ×
+                            </button>
+                            <div className="mb-6">
+                                <h3 className="text-3xl font-bold text-white">{selectedProject.title}</h3>
+                                <p className="text-gray-400 mt-2">{selectedProject.client} • {selectedProject.year}</p>
+                            </div>
+                            <video 
+                                controls 
+                                autoPlay
+                                className="w-full rounded-lg shadow-2xl"
+                            >
+                                <source src={selectedProject.video} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
+                        </div>
+                    </div>
+                )}
             </div>
         );
     };
