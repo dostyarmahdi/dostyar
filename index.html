@@ -56,18 +56,28 @@
 
         return (
             <div className="text-white min-h-screen relative bg-black">
-                {/* Opening Image Overlay */}
+                {/* Opening Video Overlay */}
                 <div 
-                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none"
+                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
                     style={{
                         height: lineExpanded ? '100vh' : '8px',
-                        backgroundImage: `url('images/SnapInsta_273667917_635185030883322_6547131825556686311_n.mp4')`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        zIndex: 50,
-                        filter: 'brightness(1.2)'
+                        zIndex: 50
                     }}
-                />
+                >
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        style={{
+                            filter: 'brightness(1.2)'
+                        }}
+                    >
+                        <source src="YOUR_OPENING_VIDEO_URL.mp4" type="video/mp4" />
+                        <source src="YOUR_OPENING_VIDEO_URL.webm" type="video/webm" />
+                    </video>
+                </div>
                 
                 <div 
                     className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none"
@@ -79,50 +89,64 @@
                     }}
                 />
 
-                {/* Hero Section with Background Image */}
+                {/* Hero Section - Black background with white text */}
                 <section 
                     className="relative min-h-screen flex items-center justify-center overflow-hidden"
                     style={{
-                        backgroundImage: `url('images/IMG_7878.jpeg')`,
+                        backgroundColor: '#000000',
+                        backgroundImage: `url('YOUR_HERO_BACKGROUND_IMAGE_URL')`,
                         backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundColor: '#ffffff'
+                        backgroundPosition: 'center'
                     }}
                 >
-                    <div className="absolute inset-0 bg-white opacity-50" />
+                    <div className="absolute inset-0 bg-black opacity-60" />
                     
-                    <div className="relative z-10 text-center px-6 max-w-6xl w-full">
-                        <div className="overflow-hidden mb-8">
-                            <h1 
-                                className="text-8xl md:text-9xl lg:text-[12rem] font-bold tracking-tighter leading-none"
+                    <div className="relative z-10 px-6 max-w-7xl w-full">
+                        <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16">
+                            {/* Portrait Image */}
+                            <div 
+                                className="flex-shrink-0 w-40 h-60 md:w-48 md:h-72 rounded-lg overflow-hidden shadow-2xl"
                                 style={{
                                     opacity: Math.max(0, 1 - scrollY / 500),
                                     transition: 'opacity 0.8s ease-out',
-                                    color: '#000000'
+                                    backgroundImage: `url('YOUR_PORTRAIT_IMAGE_URL')`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    backgroundColor: '#3f3f46'
                                 }}
-                            >
-                                JOHN
-                            </h1>
-                        </div>
-                        <div className="overflow-hidden">
-                            <h1 
-                                className="text-8xl md:text-9xl lg:text-[12rem] font-bold tracking-tighter leading-none"
-                                style={{
-                                    opacity: Math.max(0, 1 - scrollY / 500),
-                                    transition: 'opacity 0.8s ease-out',
-                                    color: '#000000'
-                                }}
-                            >
-                                SMITH
-                            </h1>
+                            />
+                            
+                            {/* Name */}
+                            <div className="text-center md:text-left">
+                                <h1 
+                                    className="text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-none mb-4"
+                                    style={{
+                                        opacity: Math.max(0, 1 - scrollY / 500),
+                                        transition: 'opacity 0.8s ease-out',
+                                        color: '#ffffff'
+                                    }}
+                                >
+                                    JOHN
+                                </h1>
+                                <h1 
+                                    className="text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter leading-none"
+                                    style={{
+                                        opacity: Math.max(0, 1 - scrollY / 500),
+                                        transition: 'opacity 0.8s ease-out',
+                                        color: '#ffffff'
+                                    }}
+                                >
+                                    SMITH
+                                </h1>
+                            </div>
                         </div>
                         
                         <p 
-                            className="mt-12 text-xl md:text-2xl tracking-wider max-w-3xl mx-auto"
+                            className="mt-12 text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center"
                             style={{
                                 opacity: Math.max(0, 1 - scrollY / 500),
                                 transition: 'opacity 0.8s ease-out',
-                                color: '#1f2937'
+                                color: '#e5e7eb'
                             }}
                         >
                             Award-winning cinematographer specializing in narrative storytelling, 
@@ -135,7 +159,7 @@
                             style={{ 
                                 opacity: Math.max(0, 1 - scrollY / 300),
                                 transition: 'opacity 0.8s ease-out',
-                                color: '#4b5563'
+                                color: '#d1d5db'
                             }}
                         >
                             <span>SCROLL TO VIEW MORE</span>
