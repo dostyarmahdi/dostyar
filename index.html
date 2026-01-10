@@ -107,12 +107,26 @@
             <div className="text-white min-h-screen relative bg-black">
                 {/* Opening Line Animation */}
                 <div 
-                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden bg-gradient-to-r from-zinc-800 to-zinc-900"
-                    style={{
-                        height: lineExpanded ? '100vh' : '8px',
-                        zIndex: 50
-                    }}
-                />
+    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
+    style={{
+        height: lineExpanded ? '100vh' : '8px',
+        zIndex: 50
+    }}
+>
+    <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="w-full h-full object-cover"
+        style={{
+            filter: 'brightness(1.2)'
+        }}
+    >
+        <source src="Galaxy Abstract Motion Background | Cosmic Loop.mov" type="video/mov" />
+        <source src="YOUR_OPENING_VIDEO_URL_HERE.webm" type="video/webm" />
+    </video>
+</div>
 
                 {/* Hero Section */}
                 <section 
