@@ -6,99 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>John Smith - Cinematographer Portfolio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-```
-    @keyframes float {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-20px); }
-    }
-    
-    @keyframes pulse-glow {
-        0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
-        50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
-    }
-
-    .gradient-text {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-        background-size: 300% 300%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        animation: gradient-shift 8s ease infinite;
-    }
-
-    .gradient-border {
-        position: relative;
-        background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #4facfe);
-        background-size: 300% 300%;
-        animation: gradient-shift 8s ease infinite;
-    }
-
-    .hover-lift {
-        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .hover-lift:hover {
-        transform: translateY(-12px) scale(1.02);
-    }
-
-    .magnetic-cursor {
-        transition: transform 0.2s ease-out;
-    }
-
-    .scroll-reveal {
-        opacity: 0;
-        transform: translateY(40px);
-        transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    }
-
-    .scroll-reveal.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .shimmer {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .shimmer::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-        animation: shimmer 3s infinite;
-    }
-
-    @keyframes shimmer {
-        0% { left: -100%; }
-        100% { left: 100%; }
-    }
-
-    .neon-glow {
-        text-shadow: 
-            0 0 10px rgba(139, 92, 246, 0.8),
-            0 0 20px rgba(139, 92, 246, 0.6),
-            0 0 30px rgba(139, 92, 246, 0.4),
-            0 0 40px rgba(139, 92, 246, 0.2);
-    }
-
-    .color-shift {
-        background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460, #533483);
-        background-size: 400% 400%;
-        animation: gradient-shift 15s ease infinite;
-    }
-</style>
-```
-
 </head>
 <body class="bg-black text-white overflow-x-hidden">
     <div id="root"></div>
@@ -115,22 +22,12 @@
         const [scrollY, setScrollY] = useState(0);
         const [lineExpanded, setLineExpanded] = useState(true);
         const [selectedProject, setSelectedProject] = useState(null);
-        const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
         const workRefs = useRef([]);
 
         useEffect(() => {
             const handleScroll = () => setScrollY(window.scrollY);
-            const handleMouseMove = (e) => {
-                setMousePosition({ x: e.clientX, y: e.clientY });
-            };
-            
             window.addEventListener('scroll', handleScroll);
-            window.addEventListener('mousemove', handleMouseMove);
-            
-            return () => {
-                window.removeEventListener('scroll', handleScroll);
-                window.removeEventListener('mousemove', handleMouseMove);
-            };
+            return () => window.removeEventListener('scroll', handleScroll);
         }, []);
 
         useEffect(() => {
@@ -152,7 +49,6 @@
                 client: "Netflix Original", 
                 year: "2024", 
                 type: "Documentary Feature", 
-                color: "#8b5cf6",
                 thumbnail: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&q=80", 
                 video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
             },
@@ -162,7 +58,6 @@
                 client: "Nike Global", 
                 year: "2024", 
                 type: "Commercial Campaign", 
-                color: "#ec4899",
                 thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80", 
                 video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" 
             },
@@ -172,7 +67,6 @@
                 client: "Apple Music", 
                 year: "2023", 
                 type: "Music Video", 
-                color: "#06b6d4",
                 thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80", 
                 video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" 
             },
@@ -182,7 +76,6 @@
                 client: "HBO Documentary", 
                 year: "2023", 
                 type: "Short Film", 
-                color: "#3b82f6",
                 thumbnail: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80", 
                 video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" 
             },
@@ -192,7 +85,6 @@
                 client: "Vogue Fashion", 
                 year: "2023", 
                 type: "Fashion Film", 
-                color: "#f59e0b",
                 thumbnail: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80", 
                 video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" 
             },
@@ -202,7 +94,6 @@
                 client: "Independent", 
                 year: "2022", 
                 type: "Documentary Series", 
-                color: "#10b981",
                 thumbnail: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=800&q=80", 
                 video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" 
             }
@@ -212,29 +103,14 @@
         const aboutTextOpacity = Math.max(0, Math.min(1, (scrollY - window.innerHeight * 0.5) / 400));
         const contactTitleProgress = Math.max(0, Math.min(1, (scrollY - window.innerHeight * 4.5) / 400));
 
-        // Parallax effect for mouse movement
-        const parallaxX = (mousePosition.x - window.innerWidth / 2) / 50;
-        const parallaxY = (mousePosition.y - window.innerHeight / 2) / 50;
-
         return (
-            <div className="text-white min-h-screen relative color-shift">
-                {/* Animated gradient background overlay */}
+            <div className="text-white min-h-screen relative bg-black">
+                {/* Opening Video Animation */}
                 <div 
-                    className="fixed inset-0 pointer-events-none opacity-30"
-                    style={{
-                        background: 'radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1), transparent 50%)',
-                        transform: `translate(${parallaxX}px, ${parallaxY}px)`,
-                        transition: 'transform 0.3s ease-out'
-                    }}
-                />
-
-                {/* Opening Video Animation with gradient border */}
-                <div 
-                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden gradient-border"
+                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
                     style={{
                         height: lineExpanded ? '100vh' : '8px',
-                        zIndex: 50,
-                        padding: lineExpanded ? '0' : '2px'
+                        zIndex: 50
                     }}
                 >
                     <video
@@ -244,7 +120,7 @@
                         playsInline
                         className="w-full h-full object-cover"
                         style={{
-                            filter: 'brightness(1.2) saturate(1.3)'
+                            filter: 'brightness(1.2)'
                         }}
                     >
                         <source src="images/opening-video.mov" type="video/mp4" />
@@ -255,64 +131,47 @@
                 <section 
                     className="relative min-h-screen flex items-center justify-center overflow-hidden"
                     style={{
-                        backgroundImage: `linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)), linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&q=80')`,
+                        backgroundColor: '#000000',
+                        backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&q=80')`,
                         backgroundSize: 'cover',
                         backgroundPosition: 'center'
                     }}
                 >
-                    {/* Floating particles effect */}
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        {[...Array(20)].map((_, i) => (
-                            <div
-                                key={i}
-                                className="absolute rounded-full bg-gradient-to-r from-purple-500 to-pink-500 opacity-20"
-                                style={{
-                                    width: Math.random() * 6 + 2 + 'px',
-                                    height: Math.random() * 6 + 2 + 'px',
-                                    left: Math.random() * 100 + '%',
-                                    top: Math.random() * 100 + '%',
-                                    animation: `float ${Math.random() * 10 + 10}s ease-in-out infinite`,
-                                    animationDelay: Math.random() * 5 + 's'
-                                }}
-                            />
-                        ))}
-                    </div>
+                    <div className="absolute inset-0 bg-black opacity-40" />
                     
                     <div className="relative z-10 px-6 max-w-7xl w-full">
                         <div className="flex items-center justify-center gap-8">
-                            {/* Portrait Image with glow */}
+                            {/* Portrait Image */}
                             <div 
-                                className="flex-shrink-0 w-32 h-32 rounded-lg overflow-hidden shadow-2xl shimmer"
+                                className="flex-shrink-0 w-28 h-28 rounded-lg overflow-hidden shadow-2xl"
                                 style={{
                                     opacity: Math.max(0, 1 - scrollY / 500),
-                                    transform: `translateY(${scrollY * 0.3}px) scale(${1 - scrollY / 2000})`,
                                     transition: 'opacity 0.8s ease-out',
                                     backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80')`,
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
-                                    boxShadow: '0 0 40px rgba(139, 92, 246, 0.5)',
-                                    border: '3px solid rgba(139, 92, 246, 0.3)'
+                                    backgroundColor: '#3f3f46'
                                 }}
                             />
                             
-                            {/* Name with gradient */}
+                            {/* Name */}
                             <div>
                                 <h1 
-                                    className="text-7xl md:text-8xl font-bold tracking-tighter leading-none gradient-text"
+                                    className="text-6xl md:text-7xl font-bold tracking-tighter leading-none"
                                     style={{
                                         opacity: Math.max(0, 1 - scrollY / 500),
-                                        transform: `translateY(${scrollY * 0.2}px)`,
-                                        transition: 'opacity 0.8s ease-out'
+                                        transition: 'opacity 0.8s ease-out',
+                                        color: '#ffffff'
                                     }}
                                 >
                                     JOHN
                                 </h1>
                                 <h1 
-                                    className="text-7xl md:text-8xl font-bold tracking-tighter leading-none gradient-text"
+                                    className="text-6xl md:text-7xl font-bold tracking-tighter leading-none"
                                     style={{
                                         opacity: Math.max(0, 1 - scrollY / 500),
-                                        transform: `translateY(${scrollY * 0.2}px)`,
-                                        transition: 'opacity 0.8s ease-out, transform 0.8s ease-out'
+                                        transition: 'opacity 0.8s ease-out',
+                                        color: '#ffffff'
                                     }}
                                 >
                                     SMITH
@@ -321,12 +180,11 @@
                         </div>
                         
                         <p 
-                            className="mt-12 text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center text-gray-200"
+                            className="mt-12 text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center"
                             style={{
                                 opacity: Math.max(0, 1 - scrollY / 500),
-                                transform: `translateY(${scrollY * 0.15}px)`,
-                                transition: 'opacity 0.8s ease-out, transform 0.8s ease-out',
-                                textShadow: '0 2px 10px rgba(0,0,0,0.5)'
+                                transition: 'opacity 0.8s ease-out',
+                                color: '#e5e7eb'
                             }}
                         >
                             Award-winning cinematographer specializing in narrative storytelling, 
@@ -342,39 +200,16 @@
                                 color: '#d1d5db'
                             }}
                         >
-                            <span className="gradient-text font-semibold">SCROLL TO VIEW MORE</span>
-                            <div className="animate-bounce gradient-text text-xl">↓</div>
+                            <span>SCROLL TO VIEW MORE</span>
+                            <div className="animate-bounce">↓</div>
                         </div>
                     </div>
                 </section>
 
-                {/* About Section with color accents */}
+                {/* About Section */}
                 <section className="relative py-32 px-6 overflow-hidden">
-                    <div className="absolute inset-0 pointer-events-none">
-                        <div 
-                            className="absolute w-96 h-96 rounded-full"
-                            style={{
-                                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15), transparent)',
-                                top: '20%',
-                                left: '-10%',
-                                filter: 'blur(60px)',
-                                transform: `translate(${scrollY * 0.1}px, ${scrollY * 0.05}px)`
-                            }}
-                        />
-                        <div 
-                            className="absolute w-96 h-96 rounded-full"
-                            style={{
-                                background: 'radial-gradient(circle, rgba(236, 72, 153, 0.15), transparent)',
-                                bottom: '20%',
-                                right: '-10%',
-                                filter: 'blur(60px)',
-                                transform: `translate(${-scrollY * 0.1}px, ${-scrollY * 0.05}px)`
-                            }}
-                        />
-                    </div>
-
                     <div className="relative z-10 max-w-5xl mx-auto">
-                        <p className="text-3xl md:text-5xl font-light leading-relaxed text-gray-200">
+                        <p className="text-3xl md:text-5xl font-light leading-relaxed text-gray-300">
                             <span 
                                 className="inline-block"
                                 style={{
@@ -383,7 +218,7 @@
                                     transition: 'all 0.6s ease-out'
                                 }}
                             >
-                                I craft <span className="gradient-text font-normal">visual narratives</span> that resonate. 
+                                I craft visual narratives that resonate. 
                             </span>
                             {' '}
                             <span 
@@ -394,7 +229,7 @@
                                     transition: 'all 0.6s ease-out 0.1s'
                                 }}
                             >
-                                With over <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-normal">10 years</span> of experience behind the lens, 
+                                With over <span className="text-white font-normal">10 years</span> of experience behind the lens, 
                             </span>
                             {' '}
                             <span 
@@ -416,91 +251,58 @@
                                     transition: 'all 0.6s ease-out 0.3s'
                                 }}
                             >
-                                through <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 font-normal">cinematography</span>, 
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400 font-normal"> lighting</span>, and 
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 font-normal"> visual composition</span>.
+                                through <span className="text-white font-normal">cinematography</span>, 
+                                <span className="text-white font-normal"> lighting</span>, and 
+                                <span className="text-white font-normal"> visual composition</span>.
                             </span>
                         </p>
                     </div>
                 </section>
 
-                {/* Enhanced Film Strip Section */}
+                {/* Film Strip Section */}
                 <section className="relative py-20 overflow-hidden">
                     <div className="space-y-8">
-                        {/* Row 1 */}
+                        {/* Row 1 - Single frame scrolls Left */}
                         <div 
-                            className="flex gap-8"
+                            className="flex"
                             style={{
                                 transform: `translateX(${-scrollY * 0.3}px)`,
                                 minWidth: 'max-content'
                             }}
                         >
-                            <div 
-                                className="flex-shrink-0 w-full h-80 rounded-lg overflow-hidden relative group shimmer" 
-                                style={{ 
-                                    width: '80vw', 
-                                    backgroundImage: "url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80')", 
-                                    backgroundSize: 'cover', 
-                                    backgroundPosition: 'center',
-                                    boxShadow: '0 10px 40px rgba(139, 92, 246, 0.3)'
-                                }}
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            </div>
+                            <div className="flex-shrink-0 w-full h-80 bg-zinc-800 rounded-lg" style={{ width: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
                         </div>
 
-                        {/* Row 2 */}
+                        {/* Row 2 - Single frame scrolls Right */}
                         <div 
-                            className="flex gap-8"
+                            className="flex"
                             style={{
                                 transform: `translateX(${scrollY * 0.3}px)`,
                                 minWidth: 'max-content',
                                 marginLeft: '-40%'
                             }}
                         >
-                            <div 
-                                className="flex-shrink-0 w-full h-80 rounded-lg overflow-hidden relative group shimmer" 
-                                style={{ 
-                                    width: '80vw', 
-                                    backgroundImage: "url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&q=80')", 
-                                    backgroundSize: 'cover', 
-                                    backgroundPosition: 'center',
-                                    boxShadow: '0 10px 40px rgba(236, 72, 153, 0.3)'
-                                }}
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            </div>
+                            <div className="flex-shrink-0 w-full h-80 bg-zinc-800 rounded-lg" style={{ width: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
                         </div>
 
-                        {/* Row 3 */}
+                        {/* Row 3 - Single frame scrolls Left */}
                         <div 
-                            className="flex gap-8"
+                            className="flex"
                             style={{
                                 transform: `translateX(${-scrollY * 0.3}px)`,
                                 minWidth: 'max-content'
                             }}
                         >
-                            <div 
-                                className="flex-shrink-0 w-full h-80 rounded-lg overflow-hidden relative group shimmer" 
-                                style={{ 
-                                    width: '80vw', 
-                                    backgroundImage: "url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80')", 
-                                    backgroundSize: 'cover', 
-                                    backgroundPosition: 'center',
-                                    boxShadow: '0 10px 40px rgba(6, 182, 212, 0.3)'
-                                }}
-                            >
-                                <div className="absolute inset-0 bg-gradient-to-r from-amber-600/20 to-orange-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            </div>
+                            <div className="flex-shrink-0 w-full h-80 bg-zinc-800 rounded-lg" style={{ width: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
                         </div>
                     </div>
                 </section>
 
-                {/* Featured Work Title with gradient */}
+                {/* Featured Work Title */}
                 <section className="relative py-20 px-6 overflow-hidden">
                     <div className="relative z-10 max-w-7xl mx-auto">
                         <h2 
-                            className="text-6xl md:text-8xl font-bold gradient-text neon-glow"
+                            className="text-5xl md:text-7xl font-bold text-white"
                             style={{
                                 opacity: workTitleProgress,
                                 transform: `translateY(${Math.max(0, 20 - workTitleProgress * 20)}px)`,
@@ -510,7 +312,7 @@
                             FEATURED
                         </h2>
                         <h3 
-                            className="text-6xl md:text-8xl font-bold gradient-text neon-glow mt-2"
+                            className="text-5xl md:text-7xl font-bold text-white mt-2"
                             style={{ 
                                 opacity: Math.max(0, workTitleProgress - 0.2),
                                 transform: `translateY(${Math.max(0, 20 - (workTitleProgress - 0.2) * 20)}px)`,
@@ -522,7 +324,7 @@
                     </div>
                 </section>
 
-                {/* Enhanced Work Grid */}
+                {/* Work Grid */}
                 <section className="pb-32 px-6">
                     <div className="max-w-7xl mx-auto space-y-1">
                         {projects.map((project, idx) => {
@@ -532,44 +334,24 @@
                                 <div 
                                     key={project.id}
                                     ref={el => workRefs.current[idx] = el}
-                                    className="group relative overflow-hidden rounded-xl"
-                                    style={{
-                                        background: `linear-gradient(90deg, transparent, ${project.color}10, transparent)`,
-                                        border: `1px solid ${project.color}20`,
-                                        transition: 'all 0.5s ease'
-                                    }}
+                                    className="group relative border-y border-white border-opacity-10 hover:border-opacity-30 transition-all duration-500 overflow-hidden"
                                 >
-                                    <div className="py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-0 relative">
-                                        {/* Hover gradient overlay */}
+                                    <div className="py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-0">
                                         <div 
-                                            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                                            style={{
-                                                background: `linear-gradient(90deg, transparent, ${project.color}15, transparent)`
-                                            }}
-                                        />
-
-                                        <div 
-                                            className="md:w-32 flex-shrink-0 relative z-10"
+                                            className="md:w-32 flex-shrink-0"
                                             style={{
                                                 transform: inView ? 'translateX(0)' : 'translateX(-100px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 0.8s ease-out'
                                             }}
                                         >
-                                            <span 
-                                                className="text-6xl md:text-7xl font-bold transition-all duration-500"
-                                                style={{
-                                                    color: project.color,
-                                                    opacity: 0.3,
-                                                    textShadow: inView ? `0 0 30px ${project.color}` : 'none'
-                                                }}
-                                            >
+                                            <span className="text-6xl md:text-7xl font-bold text-white text-opacity-20 group-hover:text-opacity-100 transition-all duration-500">
                                                 {String(idx + 1).padStart(2, '0')}
                                             </span>
                                         </div>
 
                                         <div 
-                                            className="md:w-80 h-48 flex-shrink-0 relative overflow-hidden cursor-pointer rounded-lg hover-lift relative z-10"
+                                            className="md:w-80 h-48 flex-shrink-0 bg-zinc-900 relative overflow-hidden cursor-pointer"
                                             onClick={() => setSelectedProject(project)}
                                             style={{
                                                 transform: inView ? 'translateX(0)' : 'translateX(-150px)',
@@ -577,127 +359,74 @@
                                                 transition: 'all 1s ease-out 0.2s',
                                                 backgroundImage: `url('${project.thumbnail}')`,
                                                 backgroundSize: 'cover',
-                                                backgroundPosition: 'center',
-                                                boxShadow: `0 10px 40px ${project.color}40`
+                                                backgroundPosition: 'center'
                                             }}
                                         >
-                                            <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-10 transition-opacity duration-500" />
-                                            <div 
-                                                className="absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500"
-                                                style={{
-                                                    background: `linear-gradient(135deg, ${project.color}, transparent)`
-                                                }}
-                                            />
+                                            <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
                                             <div className="absolute inset-0 flex items-center justify-center">
-                                                <div 
-                                                    className="w-16 h-16 rounded-full flex items-center justify-center opacity-60 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500"
-                                                    style={{
-                                                        border: `2px solid ${project.color}`,
-                                                        backgroundColor: `${project.color}20`,
-                                                        boxShadow: `0 0 20px ${project.color}60`
-                                                    }}
-                                                >
-                                                    <svg viewBox="0 0 24 24" fill="none" className="w-8 h-8">
-                                                        <polygon points="8 5 19 12 8 19 8 5" fill={project.color} opacity="0.9"/>
+                                                <div className="w-16 h-16 border-2 border-white opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all">
+                                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                                        <polygon points="5 3 19 12 5 21 5 3" fill="white" opacity="0.8"/>
                                                     </svg>
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div 
-                                            className="flex-grow md:pl-12 relative z-10"
+                                            className="flex-grow md:pl-12"
                                             style={{
                                                 transform: inView ? 'translateX(0)' : 'translateX(-100px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 1s ease-out 0.4s'
                                             }}
                                         >
-                                            <h3 className="text-3xl md:text-4xl font-bold mb-2 group-hover:translate-x-4 transition-all duration-500 text-white">
+                                            <h3 className="text-3xl md:text-4xl font-bold mb-2 group-hover:translate-x-4 transition-transform duration-500">
                                                 {project.title}
                                             </h3>
-                                            <p 
-                                                className="text-lg mb-1 transition-colors duration-500"
-                                                style={{ 
-                                                    color: project.color,
-                                                    opacity: 0.8
-                                                }}
-                                            >
-                                                {project.client}
-                                            </p>
-                                            <p className="text-gray-400 text-sm">{project.type}</p>
+                                            <p className="text-gray-500 text-lg mb-1">{project.client}</p>
+                                            <p className="text-gray-600 text-sm">{project.type}</p>
                                         </div>
 
                                         <div 
-                                            className="md:w-32 flex-shrink-0 md:text-right relative z-10"
+                                            className="md:w-32 flex-shrink-0 md:text-right"
                                             style={{
                                                 transform: inView ? 'translateX(0)' : 'translateX(-50px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 1s ease-out 0.5s'
                                             }}
                                         >
-                                            <span 
-                                                className="text-2xl transition-colors duration-500"
-                                                style={{
-                                                    color: project.color
-                                                }}
-                                            >
+                                            <span className="text-2xl text-gray-600 group-hover:text-white transition-colors duration-500">
                                                 {project.year}
                                             </span>
                                         </div>
 
                                         <div 
-                                            className="md:w-20 flex-shrink-0 md:text-right relative z-10"
+                                            className="md:w-20 flex-shrink-0 md:text-right"
                                             style={{
                                                 transform: inView ? 'translateX(0)' : 'translateX(-30px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 1s ease-out 0.6s'
                                             }}
                                         >
-                                            <span 
-                                                className="text-3xl opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500 inline-block"
-                                                style={{ color: project.color }}
-                                            >
+                                            <span className="text-3xl opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all duration-500 inline-block">
                                                 →
                                             </span>
                                         </div>
                                     </div>
+
+                                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none" />
                                 </div>
                             );
                         })}
                     </div>
                 </section>
 
-                {/* Enhanced Contact Section */}
+                {/* Contact Section */}
                 <section className="relative min-h-screen flex items-center justify-center px-6 py-32 overflow-hidden">
-                    {/* Gradient orbs */}
-                    <div className="absolute inset-0 pointer-events-none">
-                        <div 
-                            className="absolute w-96 h-96 rounded-full"
-                            style={{
-                                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent)',
-                                top: '10%',
-                                left: '10%',
-                                filter: 'blur(80px)',
-                                animation: 'float 15s ease-in-out infinite'
-                            }}
-                        />
-                        <div 
-                            className="absolute w-96 h-96 rounded-full"
-                            style={{
-                                background: 'radial-gradient(circle, rgba(236, 72, 153, 0.2), transparent)',
-                                bottom: '10%',
-                                right: '10%',
-                                filter: 'blur(80px)',
-                                animation: 'float 20s ease-in-out infinite',
-                                animationDelay: '5s'
-                            }}
-                        />
-                    </div>
-
                     <div className="relative z-10 max-w-5xl w-full">
                         <div className="text-center mb-20">
                             <h2 
-                                className="text-6xl md:text-8xl font-bold gradient-text neon-glow"
+                                className="text-5xl md:text-7xl font-bold text-white"
                                 style={{
                                     opacity: contactTitleProgress,
                                     transform: `translateY(${Math.max(0, 20 - contactTitleProgress * 20)}px)`,
@@ -707,7 +436,7 @@
                                 LET'S CREATE
                             </h2>
                             <h3 
-                                className="text-6xl md:text-8xl font-bold gradient-text neon-glow mt-2"
+                                className="text-5xl md:text-7xl font-bold text-white mt-2"
                                 style={{ 
                                     opacity: Math.max(0, contactTitleProgress - 0.2),
                                     transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.2) * 20)}px)`,
@@ -720,46 +449,34 @@
 
                         <div className="grid md:grid-cols-2 gap-16 text-center md:text-left">
                             <div 
-                                className="space-y-3 group cursor-pointer"
+                                className="space-y-3"
                                 style={{
                                     opacity: Math.max(0, contactTitleProgress - 0.4),
                                     transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.4) * 20)}px)`,
                                     transition: 'all 0.6s ease-out 0.3s'
                                 }}
                             >
-                                <p className="text-sm tracking-widest text-purple-400 font-semibold">EMAIL</p>
+                                <p className="text-sm tracking-widest text-gray-600">EMAIL</p>
                                 <a 
                                     href="mailto:john@cinematographer.com" 
-                                    className="text-3xl md:text-4xl transition-all duration-300 block group-hover:scale-105"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text'
-                                    }}
+                                    className="text-3xl md:text-4xl hover:text-gray-400 transition-colors block"
                                 >
                                     john@cinematographer.com
                                 </a>
                             </div>
 
                             <div 
-                                className="space-y-3 group cursor-pointer"
+                                className="space-y-3"
                                 style={{
                                     opacity: Math.max(0, contactTitleProgress - 0.5),
                                     transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.5) * 20)}px)`,
                                     transition: 'all 0.6s ease-out 0.4s'
                                 }}
                             >
-                                <p className="text-sm tracking-widest text-pink-400 font-semibold">PHONE</p>
+                                <p className="text-sm tracking-widest text-gray-600">PHONE</p>
                                 <a 
                                     href="tel:+13105551234" 
-                                    className="text-3xl md:text-4xl transition-all duration-300 block group-hover:scale-105"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #f093fb, #f5576c)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text'
-                                    }}
+                                    className="text-3xl md:text-4xl hover:text-gray-400 transition-colors block"
                                 >
                                     +1 (310) 555-1234
                                 </a>
@@ -773,18 +490,8 @@
                                     transition: 'all 0.6s ease-out 0.5s'
                                 }}
                             >
-                                <p className="text-sm tracking-widest text-cyan-400 font-semibold">LOCATION</p>
-                                <p 
-                                    className="text-3xl md:text-4xl"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text'
-                                    }}
-                                >
-                                    Los Angeles, CA
-                                </p>
+                                <p className="text-sm tracking-widest text-gray-600">LOCATION</p>
+                                <p className="text-3xl md:text-4xl">Los Angeles, CA</p>
                             </div>
 
                             <div 
@@ -795,94 +502,46 @@
                                     transition: 'all 0.6s ease-out 0.6s'
                                 }}
                             >
-                                <p className="text-sm tracking-widest text-amber-400 font-semibold">FOLLOW</p>
+                                <p className="text-sm tracking-widest text-gray-600">FOLLOW</p>
                                 <div className="flex gap-8 text-2xl justify-center md:justify-start">
-                                    <a 
-                                        href="#" 
-                                        className="transition-all duration-300 hover:scale-110"
-                                        style={{
-                                            background: 'linear-gradient(135deg, #f093fb, #f5576c)',
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent',
-                                            backgroundClip: 'text'
-                                        }}
-                                    >
-                                        Instagram
-                                    </a>
-                                    <a 
-                                        href="#" 
-                                        className="transition-all duration-300 hover:scale-110"
-                                        style={{
-                                            background: 'linear-gradient(135deg, #4facfe, #00f2fe)',
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent',
-                                            backgroundClip: 'text'
-                                        }}
-                                    >
-                                        Vimeo
-                                    </a>
+                                    <a href="#" className="hover:text-gray-400 transition-colors">Instagram</a>
+                                    <a href="#" className="hover:text-gray-400 transition-colors">Vimeo</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Enhanced Footer */}
-                <footer 
-                    className="relative z-10 py-8 px-6 text-center text-sm tracking-wider"
-                    style={{
-                        borderTop: '1px solid rgba(139, 92, 246, 0.2)',
-                        background: 'linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.05), transparent)'
-                    }}
-                >
-                    <p className="gradient-text">© 2024 JOHN SMITH CINEMATOGRAPHY. ALL RIGHTS RESERVED.</p>
+                {/* Footer */}
+                <footer className="relative z-10 border-t border-white border-opacity-10 py-8 px-6 text-center text-gray-600 text-sm tracking-wider">
+                    <p>© 2024 JOHN SMITH CINEMATOGRAPHY. ALL RIGHTS RESERVED.</p>
                 </footer>
 
-                {/* Enhanced Video Modal */}
+                {/* Video Modal */}
                 {selectedProject && (
                     <div 
                         className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4"
                         onClick={() => setSelectedProject(null)}
-                        style={{
-                            backdropFilter: 'blur(10px)',
-                            animation: 'fadeIn 0.3s ease-out'
-                        }}
                     >
                         <div className="relative w-full max-w-6xl" onClick={(e) => e.stopPropagation()}>
                             <button 
                                 onClick={() => setSelectedProject(null)}
-                                className="absolute -top-16 right-0 text-white text-5xl transition-all duration-300 hover:scale-110 gradient-text"
+                                className="absolute -top-12 right-0 text-white text-4xl hover:text-gray-400 transition-colors"
                             >
                                 ×
                             </button>
                             <div className="mb-6">
-                                <h3 
-                                    className="text-4xl font-bold gradient-text"
-                                >
-                                    {selectedProject.title}
-                                </h3>
-                                <p 
-                                    className="mt-2 text-xl"
-                                    style={{ color: selectedProject.color }}
-                                >
-                                    {selectedProject.client} • {selectedProject.year}
-                                </p>
+                                <h3 className="text-3xl font-bold text-white">{selectedProject.title}</h3>
+                                <p className="text-gray-400 mt-2">{selectedProject.client} • {selectedProject.year}</p>
                             </div>
-                            <div 
-                                className="rounded-lg overflow-hidden"
-                                style={{
-                                    boxShadow: `0 20px 60px ${selectedProject.color}60`
-                                }}
+                            <video 
+                                controls 
+                                autoPlay
+                                className="w-full rounded-lg shadow-2xl"
                             >
-                                <video 
-                                    controls 
-                                    autoPlay
-                                    className="w-full"
-                                >
-                                    <source src={selectedProject.video} type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
+                                <source src={selectedProject.video} type="video/mp4" />
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                     </div>
                 )}
