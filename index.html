@@ -31,6 +31,17 @@
         50% { text-shadow: 0 0 40px rgba(255,255,255,0.6); }
     }
 
+    @keyframes breathe-glow {
+        0%, 100% { 
+            box-shadow: 0 0 20px rgba(255,255,255,0.2), 0 0 40px rgba(255,255,255,0.1);
+            transform: scale(1);
+        }
+        50% { 
+            box-shadow: 0 0 40px rgba(255,255,255,0.4), 0 0 80px rgba(255,255,255,0.2);
+            transform: scale(1.02);
+        }
+    }
+
     .animate-float {
         animation: float 3s ease-in-out infinite;
     }
@@ -46,6 +57,10 @@
 
     .pulse-glow {
         animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    .breathe-glow {
+        animation: breathe-glow 4s ease-in-out infinite;
     }
 
     .split-text {
@@ -92,53 +107,55 @@
                 client: "Netflix Original", 
                 year: "2024", 
                 type: "Documentary Feature", 
-                thumbnail: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&q=80", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" 
+                thumbnail: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&q=80",
+                description: "A cinematic journey through urban landscapes at night, capturing the essence of city life after dark.",
+                gallery: [
+                    "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=1200&q=80"
+                ],
+                videos: [
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                ]
             },
             { 
                 id: 2, 
                 title: "VELOCITY", 
                 client: "Nike Global", 
                 year: "2024", 
-                type: "Commercial Campaign", 
-                thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" 
+                type: "Commercial Campaign",
+                thumbnail: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80",
+                description: "High-energy sports commercial capturing the power and determination of athletes in motion.",
+                gallery: [
+                    "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&q=80"
+                ],
+                videos: [
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                ]
             },
             { 
                 id: 3, 
                 title: "ECHOES", 
                 client: "Apple Music", 
                 year: "2023", 
-                type: "Music Video", 
-                thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" 
-            },
-            { 
-                id: 4, 
-                title: "SILENT WAVES", 
-                client: "HBO Documentary", 
-                year: "2023", 
-                type: "Short Film", 
-                thumbnail: "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" 
-            },
-            { 
-                id: 5, 
-                title: "MODERN SPIRIT", 
-                client: "Vogue Fashion", 
-                year: "2023", 
-                type: "Fashion Film", 
-                thumbnail: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=80", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" 
-            },
-            { 
-                id: 6, 
-                title: "URBAN STORIES", 
-                client: "Independent", 
-                year: "2022", 
-                type: "Documentary Series", 
-                thumbnail: "https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=800&q=80", 
-                video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4" 
+                type: "Music Video",
+                thumbnail: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
+                description: "An artistic visual narrative blending music and emotion through innovative cinematography.",
+                gallery: [
+                    "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=80",
+                    "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=1200&q=80"
+                ],
+                videos: [
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+                ]
             }
         ];
 
@@ -304,39 +321,20 @@
 
                 {/* Film Strip Section */}
                 <section className="relative py-20 overflow-hidden">
-                    <div className="space-y-8">
-                        {/* Row 1 - Single frame scrolls Left */}
-                        <div 
-                            className="flex"
-                            style={{
-                                transform: `translateX(${-scrollY * 0.3}px)`,
-                                minWidth: 'max-content'
-                            }}
-                        >
-                            <div className="flex-shrink-0 w-full h-80 bg-zinc-800 rounded-lg" style={{ width: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                    <div className="space-y-8 px-6">
+                        {/* Row 1 - Steady with breathing glow */}
+                        <div className="flex justify-center">
+                            <div className="w-full h-80 bg-zinc-800 rounded-lg breathe-glow" style={{ maxWidth: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
                         </div>
 
-                        {/* Row 2 - Single frame scrolls Right */}
-                        <div 
-                            className="flex"
-                            style={{
-                                transform: `translateX(${scrollY * 0.3}px)`,
-                                minWidth: 'max-content',
-                                marginLeft: '-40%'
-                            }}
-                        >
-                            <div className="flex-shrink-0 w-full h-80 bg-zinc-800 rounded-lg" style={{ width: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                        {/* Row 2 - Steady with breathing glow */}
+                        <div className="flex justify-center">
+                            <div className="w-full h-80 bg-zinc-800 rounded-lg breathe-glow" style={{ maxWidth: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
                         </div>
 
-                        {/* Row 3 - Single frame scrolls Left */}
-                        <div 
-                            className="flex"
-                            style={{
-                                transform: `translateX(${-scrollY * 0.3}px)`,
-                                minWidth: 'max-content'
-                            }}
-                        >
-                            <div className="flex-shrink-0 w-full h-80 bg-zinc-800 rounded-lg" style={{ width: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                        {/* Row 3 - Steady with breathing glow */}
+                        <div className="flex justify-center">
+                            <div className="w-full h-80 bg-zinc-800 rounded-lg breathe-glow" style={{ maxWidth: '80vw', backgroundImage: "url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1200&q=80')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
                         </div>
                     </div>
                 </section>
@@ -569,31 +567,77 @@
                     <p>© 2024 JOHN SMITH CINEMATOGRAPHY. ALL RIGHTS RESERVED.</p>
                 </footer>
 
-                {/* Video Modal */}
+                {/* Project Detail Page */}
                 {selectedProject && (
                     <div 
-                        className="fixed inset-0 bg-black bg-opacity-95 z-50 flex items-center justify-center p-4"
-                        onClick={() => setSelectedProject(null)}
+                        className="fixed inset-0 bg-black z-50 overflow-y-auto"
+                        style={{ paddingTop: '60px' }}
                     >
-                        <div className="relative w-full max-w-6xl" onClick={(e) => e.stopPropagation()}>
-                            <button 
-                                onClick={() => setSelectedProject(null)}
-                                className="absolute -top-12 right-0 text-white text-4xl hover:text-gray-400 transition-colors"
-                            >
-                                ×
-                            </button>
-                            <div className="mb-6">
-                                <h3 className="text-3xl font-bold text-white">{selectedProject.title}</h3>
-                                <p className="text-gray-400 mt-2">{selectedProject.client} • {selectedProject.year}</p>
+                        {/* Close Button */}
+                        <button 
+                            onClick={() => setSelectedProject(null)}
+                            className="fixed top-8 right-8 text-white text-4xl hover:text-gray-400 transition-colors z-50"
+                        >
+                            ×
+                        </button>
+
+                        {/* Project Header */}
+                        <div className="max-w-7xl mx-auto px-6 py-12">
+                            <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">{selectedProject.title}</h1>
+                            <div className="flex gap-6 text-gray-400 text-xl mb-6">
+                                <span>{selectedProject.client}</span>
+                                <span>•</span>
+                                <span>{selectedProject.year}</span>
+                                <span>•</span>
+                                <span>{selectedProject.type}</span>
                             </div>
-                            <video 
-                                controls 
-                                autoPlay
-                                className="w-full rounded-lg shadow-2xl"
-                            >
-                                <source src={selectedProject.video} type="video/mp4" />
-                                Your browser does not support the video tag.
-                            </video>
+                            <p className="text-2xl text-gray-300 max-w-4xl mb-16">{selectedProject.description}</p>
+
+                            {/* Videos Section */}
+                            <div className="mb-16">
+                                <h2 className="text-3xl font-bold text-white mb-8">Videos</h2>
+                                <div className="grid grid-cols-1 gap-8">
+                                    {selectedProject.videos.map((video, idx) => (
+                                        <div key={idx} className="w-full">
+                                            <video 
+                                                controls 
+                                                className="w-full rounded-lg shadow-2xl"
+                                            >
+                                                <source src={video} type="video/mp4" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Gallery Section */}
+                            <div className="mb-16">
+                                <h2 className="text-3xl font-bold text-white mb-8">Gallery</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    {selectedProject.gallery.map((image, idx) => (
+                                        <div 
+                                            key={idx} 
+                                            className="w-full h-96 bg-zinc-800 rounded-lg overflow-hidden"
+                                            style={{
+                                                backgroundImage: `url('${image}')`,
+                                                backgroundSize: 'cover',
+                                                backgroundPosition: 'center'
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Back Button */}
+                            <div className="text-center mt-16">
+                                <button 
+                                    onClick={() => setSelectedProject(null)}
+                                    className="px-8 py-4 bg-white text-black font-bold text-lg rounded-lg hover:bg-gray-200 transition-colors"
+                                >
+                                    ← Back to Projects
+                                </button>
+                            </div>
                         </div>
                     </div>
                 )}
