@@ -39,15 +39,6 @@
         }
     }
 
-    @keyframes breathe-glow-red {
-        0%, 100% { 
-            box-shadow: 0 0 15px rgba(139, 0, 0, 0.6), 0 0 30px rgba(139, 0, 0, 0.4);
-        }
-        50% { 
-            box-shadow: 0 0 25px rgba(139, 0, 0, 0.8), 0 0 50px rgba(139, 0, 0, 0.6);
-        }
-    }
-
     @keyframes breathe-glow-color {
         0%, 100% { 
             filter: brightness(1) drop-shadow(0 0 5px rgba(255,255,255,0.3));
@@ -97,13 +88,19 @@
         }
     }
 
-    @keyframes ripple {
+    @keyframes bubble-rise {
         0% {
-            transform: scale(0);
+            transform: translateY(100vh) scale(0.8);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
             opacity: 1;
         }
         100% {
-            transform: scale(4);
+            transform: translateY(-150vh) scale(1.2);
             opacity: 0;
         }
     }
@@ -127,10 +124,6 @@
 
     .breathe-glow {
         animation: breathe-glow 4s ease-in-out infinite;
-    }
-
-    .breathe-glow-red {
-        animation: breathe-glow-red 3s ease-in-out infinite;
     }
 
     .breathe-glow-color {
@@ -162,8 +155,13 @@
         transform: scale(1.1) rotate(-2deg);
     }
 
-    .ripple-circle {
-        animation: ripple 1.5s ease-out;
+    .bubble-rise {
+        animation: bubble-rise 3s ease-out forwards;
+    }
+
+    .invert-bubble {
+        mix-blend-mode: difference;
+        filter: brightness(2);
     }
 </style>
 
@@ -174,41 +172,62 @@
         const [scrollY, setScrollY] = useState(0);
         const [lineExpanded, setLineExpanded] = useState(true);
         const [selectedProject, setSelectedProject] = useState(null);
-        const [showBackstage, setShowBackstage] = useState(false);
-        const [ripples, setRipples] = useState([]);
+        const [bubbles, setBubbles] = useState([]);
         const workRefs = useRef([]);
-        const buttonRef = useRef(null);
+        const lastSectionRef = useRef(0);
 
         useEffect(() => {
-            const handleScroll = () => setScrollY(window.scrollY);
+            const handleScroll = () => {
+                setScrollY(window.scrollY);
+                
+                // Determine which section we're in
+                const windowHeight = window.innerHeight;
+                const currentSection = Math.floor(scrollY / windowHeight);
+                
+                // Trigger bubbles when entering a new section
+                if (currentSection !== lastSectionRef.current && currentSection > 0) {
+                    lastSectionRef.current = currentSection;
+                    triggerBubbles();
+                }
+            };
+            
             window.addEventListener('scroll', handleScroll);
             return () => window.removeEventListener('scroll', handleScroll);
-        }, []);
+        }, [scrollY]);
 
         useEffect(() => {
             const timer = setTimeout(() => setLineExpanded(false), 3000);
             return () => clearTimeout(timer);
         }, []);
 
-        const handleBackstageClick = () => {
-            if (buttonRef.current) {
-                const rect = buttonRef.current.getBoundingClientRect();
-                const x = rect.left + rect.width / 2;
-                const y = rect.top + rect.height / 2;
-                
-                const newRipple = {
-                    id: Date.now(),
-                    x,
-                    y
-                };
-                
-                setRipples(prev => [...prev, newRipple]);
-                
-                setTimeout(() => {
-                    setShowBackstage(!showBackstage);
-                    setRipples(prev => prev.filter(r => r.id !== newRipple.id));
-                }, 1500);
-            }
+        const triggerBubbles = () => {
+            const newBubbles = [
+                {
+                    id: Date.now() + 1,
+                    left: '15%',
+                    size: Math.random() * 400 + 600,
+                    delay: 0
+                },
+                {
+                    id: Date.now() + 2,
+                    left: '50%',
+                    size: Math.random() * 400 + 600,
+                    delay: 0.2
+                },
+                {
+                    id: Date.now() + 3,
+                    left: '80%',
+                    size: Math.random() * 400 + 600,
+                    delay: 0.4
+                }
+            ];
+            
+            setBubbles(prev => [...prev, ...newBubbles]);
+            
+            // Remove bubbles after animation completes
+            setTimeout(() => {
+                setBubbles(prev => prev.filter(b => !newBubbles.find(nb => nb.id === b.id)));
+            }, 3500);
         };
 
         const isInView = (index) => {
@@ -295,41 +314,26 @@
             }
         ];
 
-        // Backstage content
-        const backstageImages = [
-            "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=1200&q=80",
-            "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&q=80",
-            "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=1200&q=80",
-            "https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=1200&q=80",
-            "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=1200&q=80",
-            "https://images.unsplash.com/photo-1585647347384-2593bc35786b?w=1200&q=80"
-        ];
-
-        const backstageVideos = [
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-            "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
-        ];
-
         const workTitleProgress = Math.max(0, Math.min(1, (scrollY - window.innerHeight * 1.8) / 200));
         const aboutTextOpacity = Math.max(0, Math.min(1, (scrollY - window.innerHeight * 0.5) / 400));
         const contactTitleProgress = Math.max(0, Math.min(1, (scrollY - window.innerHeight * 4.5) / 400));
 
         return (
             <div className="text-white min-h-screen relative bg-black">
-                {/* Ripple Effects */}
-                {ripples.map(ripple => (
+                {/* Bubbles */}
+                {bubbles.map(bubble => (
                     <div
-                        key={ripple.id}
-                        className="ripple-circle fixed rounded-full pointer-events-none"
+                        key={bubble.id}
+                        className="bubble-rise invert-bubble fixed rounded-full pointer-events-none"
                         style={{
-                            left: ripple.x,
-                            top: ripple.y,
-                            width: '100px',
-                            height: '100px',
-                            marginLeft: '-50px',
-                            marginTop: '-50px',
-                            backgroundColor: 'rgba(139, 0, 0, 0.6)',
-                            zIndex: 60
+                            left: bubble.left,
+                            bottom: 0,
+                            width: `${bubble.size}px`,
+                            height: `${bubble.size}px`,
+                            marginLeft: `-${bubble.size / 2}px`,
+                            background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7) 40%, rgba(255, 255, 255, 0.4) 70%, transparent)`,
+                            zIndex: 30,
+                            animationDelay: `${bubble.delay}s`
                         }}
                     />
                 ))}
@@ -818,33 +822,6 @@
                     <p>© 2024 JOHN SMITH CINEMATOGRAPHY. ALL RIGHTS RESERVED.</p>
                 </footer>
 
-                {/* Backstage Camera Button */}
-                <button
-                    ref={buttonRef}
-                    onClick={handleBackstageClick}
-                    className="fixed bottom-8 right-8 z-40 w-16 h-16 rounded-full flex items-center justify-center hover:scale-110 transition-all duration-300 group breathe-glow-red"
-                    style={{
-                        backgroundColor: 'rgba(139, 0, 0, 0.8)',
-                        backdropFilter: 'blur(10px)'
-                    }}
-                >
-                    {/* Camera Icon */}
-                    <svg 
-                        className="w-8 h-8" 
-                        fill="#8B0000" 
-                        viewBox="0 0 24 24"
-                        style={{ filter: 'brightness(1.5)' }}
-                    >
-                        <path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                    </svg>
-                    <div className="absolute -top-12 right-0 bg-black bg-opacity-80 px-3 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap"
-                        style={{ color: '#8B0000' }}
-                    >
-                        {showBackstage ? 'Close Backstage' : 'View Backstage'}
-                    </div>
-                </button>
-
                 {/* Project Detail Page */}
                 {selectedProject && (
                     <div 
@@ -892,75 +869,6 @@
                             <div className="mb-16">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {selectedProject.gallery.map((image, idx) => (
-                                        <div 
-                                            key={idx} 
-                                            className="w-full bg-zinc-800 rounded-lg overflow-hidden"
-                                            style={{
-                                                aspectRatio: '16/9',
-                                                backgroundImage: `url('${image}')`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center'
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Backstage Page */}
-                {showBackstage && (
-                    <div 
-                        className="fixed inset-0 bg-black z-50 overflow-y-auto"
-                        style={{ paddingTop: '60px' }}
-                    >
-                        {/* Close Button (clicking the camera button again) */}
-                        <div className="max-w-7xl mx-auto px-6 py-12">
-                            <h1 
-                                className="text-5xl md:text-7xl font-bold mb-4"
-                                style={{ color: '#8B0000' }}
-                            >
-                                BACKSTAGE
-                            </h1>
-                            <div 
-                                className="flex gap-6 text-xl mb-6"
-                                style={{ color: '#A52A2A' }}
-                            >
-                                <span>Behind The Scenes</span>
-                                <span>•</span>
-                                <span>2024</span>
-                                <span>•</span>
-                                <span>Production Moments</span>
-                            </div>
-                            <p 
-                                className="text-2xl max-w-4xl mb-16"
-                                style={{ color: '#CD5C5C' }}
-                            >
-                                A glimpse into the creative process, capturing the raw moments and energy behind every shot.
-                            </p>
-
-                            {/* Videos */}
-                            <div className="mb-16">
-                                <div className="grid grid-cols-1 gap-8">
-                                    {backstageVideos.map((video, idx) => (
-                                        <div key={idx} className="w-full">
-                                            <video 
-                                                controls 
-                                                className="w-full rounded-lg shadow-2xl"
-                                            >
-                                                <source src={video} type="video/mp4" />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Gallery */}
-                            <div className="mb-16">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {backstageImages.map((image, idx) => (
                                         <div 
                                             key={idx} 
                                             className="w-full bg-zinc-800 rounded-lg overflow-hidden"
