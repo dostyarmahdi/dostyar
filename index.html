@@ -42,10 +42,28 @@
 
     @keyframes breathe-glow-color {
         0%, 100% { 
-            filter: brightness(1) drop-shadow(0 0 10px currentColor);
+            filter: brightness(1) drop-shadow(0 0 5px rgba(255,255,255,0.3));
         }
         50% { 
-            filter: brightness(1.2) drop-shadow(0 0 30px currentColor);
+            filter: brightness(1.1) drop-shadow(0 0 15px rgba(255,255,255,0.5));
+        }
+    }
+
+    @keyframes slide-horizontal {
+        0%, 100% { 
+            transform: translateX(0);
+        }
+        50% { 
+            transform: translateX(10px);
+        }
+    }
+
+    @keyframes slide-horizontal-reverse {
+        0%, 100% { 
+            transform: translateX(0);
+        }
+        50% { 
+            transform: translateX(-10px);
         }
     }
 
@@ -94,6 +112,14 @@
 
     .breathe-glow-color {
         animation: breathe-glow-color 4s ease-in-out infinite;
+    }
+
+    .slide-horizontal {
+        animation: slide-horizontal 6s ease-in-out infinite;
+    }
+
+    .slide-horizontal-reverse {
+        animation: slide-horizontal-reverse 6s ease-in-out infinite;
     }
 
     .arrow-pulse {
@@ -248,7 +274,7 @@
                             <div 
                                 className="flex-shrink-0 w-28 h-28 rounded-lg overflow-hidden shadow-2xl slide-up-fade"
                                 style={{
-                                    animationDelay: '0.2s',
+                                    animationDelay: '1s',
                                     opacity: 0,
                                     backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80')`,
                                     backgroundSize: 'cover',
@@ -262,7 +288,7 @@
                                 <h1 
                                     className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
                                     style={{
-                                        animationDelay: '0.3s',
+                                        animationDelay: '1.2s',
                                         opacity: 0
                                     }}
                                 >
@@ -271,7 +297,7 @@
                                 <h1 
                                     className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
                                     style={{
-                                        animationDelay: '0.4s',
+                                        animationDelay: '1.4s',
                                         opacity: 0
                                     }}
                                 >
@@ -280,23 +306,30 @@
                             </div>
                         </div>
                         
-                        <p 
-                            className="text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center slide-up-fade"
-                            style={{
-                                animationDelay: '0.6s',
-                                opacity: 0,
-                                color: '#e5e7eb'
-                            }}
-                        >
-                            Award-winning cinematographer specializing in narrative storytelling, 
-                            commercial campaigns, and documentary filmmaking. Based in Los Angeles, 
-                            working worldwide.
+                        <p className="text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center" style={{ color: '#e5e7eb' }}>
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '1.6s', opacity: 0 }}>Award-winning</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '1.7s', opacity: 0 }}>cinematographer</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '1.8s', opacity: 0 }}>specializing</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '1.9s', opacity: 0 }}>in</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2s', opacity: 0 }}>narrative</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.1s', opacity: 0 }}>storytelling,</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.2s', opacity: 0 }}>commercial</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.3s', opacity: 0 }}>campaigns,</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.4s', opacity: 0 }}>and</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.5s', opacity: 0 }}>documentary</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.6s', opacity: 0 }}>filmmaking.</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.7s', opacity: 0 }}>Based</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.8s', opacity: 0 }}>in</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '2.9s', opacity: 0 }}>Los</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '3s', opacity: 0 }}>Angeles,</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '3.1s', opacity: 0 }}>working</span>{' '}
+                            <span className="inline-block slide-up-fade" style={{ animationDelay: '3.2s', opacity: 0 }}>worldwide.</span>
                         </p>
 
                         <div 
                             className="mt-16 flex items-center justify-center gap-3 text-sm tracking-widest slide-up-fade"
                             style={{ 
-                                animationDelay: '0.8s',
+                                animationDelay: '3.4s',
                                 opacity: 0,
                                 color: '#d1d5db'
                             }}
@@ -367,7 +400,7 @@
                             {/* Large Image - Top Left */}
                             <div className="col-span-12 md:col-span-7">
                                 <div 
-                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color transition-transform duration-500 hover:scale-105" 
+                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color slide-horizontal transition-transform duration-500 hover:scale-105" 
                                     style={{ 
                                         aspectRatio: '16/9',
                                         backgroundImage: "url('https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&q=80')", 
@@ -380,7 +413,7 @@
                             {/* Small Image - Top Right */}
                             <div className="col-span-12 md:col-span-5">
                                 <div 
-                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color transition-transform duration-500 hover:scale-105" 
+                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color slide-horizontal-reverse transition-transform duration-500 hover:scale-105" 
                                     style={{ 
                                         aspectRatio: '16/9',
                                         backgroundImage: "url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=800&q=80')", 
@@ -393,7 +426,7 @@
                             {/* Small Image - Middle Left */}
                             <div className="col-span-12 md:col-span-4">
                                 <div 
-                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color transition-transform duration-500 hover:scale-105" 
+                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color slide-horizontal transition-transform duration-500 hover:scale-105" 
                                     style={{ 
                                         aspectRatio: '16/9',
                                         backgroundImage: "url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80')", 
@@ -406,7 +439,7 @@
                             {/* Large Image - Middle Right */}
                             <div className="col-span-12 md:col-span-8">
                                 <div 
-                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color transition-transform duration-500 hover:scale-105" 
+                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color slide-horizontal-reverse transition-transform duration-500 hover:scale-105" 
                                     style={{ 
                                         aspectRatio: '16/9',
                                         backgroundImage: "url('https://images.unsplash.com/photo-1514306191717-452ec28c7814?w=1200&q=80')", 
@@ -419,7 +452,7 @@
                             {/* Large Image - Bottom Left */}
                             <div className="col-span-12 md:col-span-6">
                                 <div 
-                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color transition-transform duration-500 hover:scale-105" 
+                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color slide-horizontal transition-transform duration-500 hover:scale-105" 
                                     style={{ 
                                         aspectRatio: '16/9',
                                         backgroundImage: "url('https://images.unsplash.com/photo-1524712245354-2c4e5e7121c0?w=1000&q=80')", 
@@ -432,7 +465,7 @@
                             {/* Medium Image - Bottom Right */}
                             <div className="col-span-12 md:col-span-6">
                                 <div 
-                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color transition-transform duration-500 hover:scale-105" 
+                                    className="w-full bg-zinc-800 rounded-lg breathe-glow-color slide-horizontal-reverse transition-transform duration-500 hover:scale-105" 
                                     style={{ 
                                         aspectRatio: '16/9',
                                         backgroundImage: "url('https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=1000&q=80')", 
@@ -494,22 +527,8 @@
                                 >
                                     <div className="py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-0">
                                         <div 
-                                            className="md:w-32 flex-shrink-0"
-                                            style={{
-                                                transform: inView ? 'translateX(0)' : 'translateX(-100px)',
-                                                opacity: inView ? 1 : 0,
-                                                transition: 'all 0.8s ease-out'
-                                            }}
-                                        >
-                                            <span className="text-6xl md:text-7xl font-bold text-white text-opacity-20 group-hover:text-opacity-100 transition-all duration-500">
-                                                {String(idx + 1).padStart(2, '0')}
-                                            </span>
-                                        </div>
-
-                                        <div 
                                             className="md:w-80 flex-shrink-0 bg-zinc-900 relative overflow-hidden rounded-lg"
                                             style={{
-                                                transform: inView ? 'translateX(0)' : 'translateX(-150px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 1s ease-out 0.2s',
                                                 aspectRatio: '16/9',
@@ -524,7 +543,6 @@
                                         <div 
                                             className="flex-grow md:pl-12"
                                             style={{
-                                                transform: inView ? 'translateX(0)' : 'translateX(-100px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 1s ease-out 0.4s'
                                             }}
@@ -539,7 +557,6 @@
                                         <div 
                                             className="md:w-32 flex-shrink-0 md:text-right"
                                             style={{
-                                                transform: inView ? 'translateX(0)' : 'translateX(-50px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 1s ease-out 0.5s'
                                             }}
@@ -552,7 +569,6 @@
                                         <div 
                                             className="md:w-20 flex-shrink-0 md:text-right"
                                             style={{
-                                                transform: inView ? 'translateX(0)' : 'translateX(-30px)',
                                                 opacity: inView ? 1 : 0,
                                                 transition: 'all 1s ease-out 0.6s'
                                             }}
@@ -567,6 +583,73 @@
                                 </div>
                             );
                         })}
+                    </div>
+                </section>
+
+                {/* Social Media Reels Section */}
+                <section className="relative py-20 px-6 overflow-hidden">
+                    <div className="relative z-10 max-w-7xl mx-auto">
+                        <h2 
+                            className="text-5xl md:text-7xl font-bold text-white animate-float mb-16"
+                        >
+                            <span className="split-text">S</span>
+                            <span className="split-text">O</span>
+                            <span className="split-text">C</span>
+                            <span className="split-text">I</span>
+                            <span className="split-text">A</span>
+                            <span className="split-text">L</span>
+                            {' '}
+                            <span className="split-text">M</span>
+                            <span className="split-text">E</span>
+                            <span className="split-text">D</span>
+                            <span className="split-text">I</span>
+                            <span className="split-text">A</span>
+                        </h2>
+
+                        {/* Vertical Videos Grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            {/* Reel 1 */}
+                            <div className="relative group">
+                                <video 
+                                    controls
+                                    className="w-full rounded-lg shadow-2xl"
+                                    style={{
+                                        aspectRatio: '9/16',
+                                        objectFit: 'cover'
+                                    }}
+                                >
+                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            {/* Reel 2 */}
+                            <div className="relative group">
+                                <video 
+                                    controls
+                                    className="w-full rounded-lg shadow-2xl"
+                                    style={{
+                                        aspectRatio: '9/16',
+                                        objectFit: 'cover'
+                                    }}
+                                >
+                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+
+                            {/* Reel 3 */}
+                            <div className="relative group">
+                                <video 
+                                    controls
+                                    className="w-full rounded-lg shadow-2xl"
+                                    style={{
+                                        aspectRatio: '9/16',
+                                        objectFit: 'cover'
+                                    }}
+                                >
+                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" type="video/mp4" />
+                                </video>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
