@@ -174,26 +174,58 @@
         const [selectedProject, setSelectedProject] = useState(null);
         const [bubbles, setBubbles] = useState([]);
         const workRefs = useRef([]);
-        const lastSectionRef = useRef(0);
+        const triggeredSections = useRef({
+            section1: false,
+            section2: false,
+            section3: false
+        });
 
         useEffect(() => {
             const handleScroll = () => {
-                setScrollY(window.scrollY);
+                const currentScrollY = window.scrollY;
+                setScrollY(currentScrollY);
                 
-                // Determine which section we're in
                 const windowHeight = window.innerHeight;
-                const currentSection = Math.floor(scrollY / windowHeight);
                 
-                // Trigger bubbles when entering a new section
-                if (currentSection !== lastSectionRef.current && currentSection > 0) {
-                    lastSectionRef.current = currentSection;
+                // Section 1: Between Hero (0-1vh) and About (1-2vh)
+                // Trigger around 0.9vh
+                const section1Trigger = windowHeight * 0.9;
+                if (currentScrollY >= section1Trigger && currentScrollY < windowHeight * 1.1 && !triggeredSections.current.section1) {
+                    triggeredSections.current.section1 = true;
                     triggerBubbles();
+                }
+                
+                // Section 2: Between Film Strip (around 2.5vh) and Featured Work (around 3vh)
+                // Trigger around 2.4vh
+                const section2Trigger = windowHeight * 2.4;
+                if (currentScrollY >= section2Trigger && currentScrollY < windowHeight * 2.6 && !triggeredSections.current.section2) {
+                    triggeredSections.current.section2 = true;
+                    triggerBubbles();
+                }
+                
+                // Section 3: Social Media section (around 4.5vh)
+                // Trigger around 4.3vh
+                const section3Trigger = windowHeight * 4.3;
+                if (currentScrollY >= section3Trigger && currentScrollY < windowHeight * 4.5 && !triggeredSections.current.section3) {
+                    triggeredSections.current.section3 = true;
+                    triggerBubbles();
+                }
+                
+                // Reset triggers when scrolling back up
+                if (currentScrollY < section1Trigger - 100) {
+                    triggeredSections.current.section1 = false;
+                }
+                if (currentScrollY < section2Trigger - 100) {
+                    triggeredSections.current.section2 = false;
+                }
+                if (currentScrollY < section3Trigger - 100) {
+                    triggeredSections.current.section3 = false;
                 }
             };
             
             window.addEventListener('scroll', handleScroll);
             return () => window.removeEventListener('scroll', handleScroll);
-        }, [scrollY]);
+        }, []);
 
         useEffect(() => {
             const timer = setTimeout(() => setLineExpanded(false), 3000);
@@ -320,7 +352,7 @@
 
         return (
             <div className="text-white min-h-screen relative bg-black">
-                {/* Bubbles */}
+                {/* Bubbles - Behind everything */}
                 {bubbles.map(bubble => (
                     <div
                         key={bubble.id}
@@ -332,7 +364,7 @@
                             height: `${bubble.size}px`,
                             marginLeft: `-${bubble.size / 2}px`,
                             background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7) 40%, rgba(255, 255, 255, 0.4) 70%, transparent)`,
-                            zIndex: 30,
+                            zIndex: 1,
                             animationDelay: `${bubble.delay}s`
                         }}
                     />
@@ -367,7 +399,8 @@
                         backgroundColor: '#000000',
                         backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&q=80')`,
                         backgroundSize: 'cover',
-                        backgroundPosition: 'center'
+                        backgroundPosition: 'center',
+                        zIndex: 10
                     }}
                 >
                     <div className="absolute inset-0 bg-black opacity-40" />
@@ -445,7 +478,7 @@
                 </section>
 
                 {/* About Section */}
-                <section className="relative py-32 px-6 overflow-hidden">
+                <section className="relative py-32 px-6 overflow-hidden" style={{ zIndex: 10 }}>
                     <div className="relative z-10 max-w-5xl mx-auto">
                         <p className="text-3xl md:text-5xl font-light leading-relaxed text-gray-300">
                             <span 
@@ -498,7 +531,7 @@
                 </section>
 
                 {/* Film Strip Section - 3 Videos */}
-                <section className="relative py-20 overflow-hidden">
+                <section className="relative py-20 overflow-hidden" style={{ zIndex: 10 }}>
                     <div className="max-w-7xl mx-auto px-6">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                             {/* Left Video */}
@@ -556,7 +589,7 @@
                 </section>
 
                 {/* Featured Work Title */}
-                <section className="relative py-20 px-6 overflow-hidden">
+                <section className="relative py-20 px-6 overflow-hidden" style={{ zIndex: 10 }}>
                     <div className="relative z-10 max-w-7xl mx-auto">
                         <h2 
                             className="text-5xl md:text-7xl font-bold text-white"
@@ -583,7 +616,7 @@
                 </section>
 
                 {/* Work Grid */}
-                <section className="pb-32 px-6">
+                <section className="pb-32 px-6" style={{ zIndex: 10, position: 'relative' }}>
                     <div className="max-w-7xl mx-auto space-y-1">
                         {projects.map((project, idx) => {
                             const inView = isInView(idx);
@@ -657,7 +690,7 @@
                 </section>
 
                 {/* Social Media Reels Section */}
-                <section className="relative py-20 px-6 overflow-hidden">
+                <section className="relative py-20 px-6 overflow-hidden" style={{ zIndex: 10 }}>
                     <div className="relative z-10 max-w-7xl mx-auto">
                         <h2 className="text-5xl md:text-7xl font-bold text-white mb-4">
                             SOCIAL MEDIA
@@ -726,7 +759,7 @@
                 </section>
 
                 {/* Contact Section */}
-                <section className="relative min-h-screen flex items-center justify-center px-6 py-32 overflow-hidden">
+                <section className="relative min-h-screen flex items-center justify-center px-6 py-32 overflow-hidden" style={{ zIndex: 10 }}>
                     <div className="relative z-10 max-w-5xl w-full">
                         <div className="text-center mb-20">
                             <h2 
