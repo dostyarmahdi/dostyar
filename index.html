@@ -88,6 +88,16 @@
         }
     }
 
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+
     .animate-float {
         animation: float 3s ease-in-out infinite;
     }
@@ -137,6 +147,34 @@
     .split-text:hover {
         transform: scale(1.1) rotate(-2deg);
     }
+
+    .loader {
+        border: 4px solid rgba(255, 255, 255, 0.1);
+        border-top: 4px solid #ffffff;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        animation: spin 1s linear infinite;
+    }
+
+    .loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #000000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .loading-screen.fade-out {
+        animation: fadeOut 0.5s ease-out forwards;
+    }
 </style>
 
 <script type="text/babel">
@@ -146,8 +184,19 @@
         const [scrollY, setScrollY] = useState(0);
         const [lineExpanded, setLineExpanded] = useState(true);
         const [selectedProject, setSelectedProject] = useState(null);
+        const [isLoading, setIsLoading] = useState(true);
+        const [videoCollapsed, setVideoCollapsed] = useState(false);
         const workRefs = useRef([]);
         const audioRef = useRef(null);
+
+        useEffect(() => {
+            // Simulate loading time to ensure content is ready
+            const loadingTimer = setTimeout(() => {
+                setIsLoading(false);
+            }, 2000); // 2 seconds loading screen
+
+            return () => clearTimeout(loadingTimer);
+        }, []);
 
         useEffect(() => {
             const handleScroll = () => {
@@ -161,13 +210,10 @@
                     const fadeEnd = windowHeight * 0.8;
                     
                     if (currentScrollY <= fadeStart) {
-                        // Fade in from 0 to full volume
                         audioRef.current.volume = Math.min(currentScrollY / 100, 1);
                     } else if (currentScrollY >= fadeEnd) {
-                        // Completely faded out
                         audioRef.current.volume = 0;
                     } else {
-                        // Fade out based on scroll position
                         const fadeProgress = (currentScrollY - fadeStart) / (fadeEnd - fadeStart);
                         audioRef.current.volume = Math.max(1 - fadeProgress, 0);
                     }
@@ -179,22 +225,30 @@
         }, []);
 
         useEffect(() => {
-            const timer = setTimeout(() => setLineExpanded(false), 3000);
-            
-            // Start playing audio after opening animation
-            const audioTimer = setTimeout(() => {
-                if (audioRef.current) {
-                    audioRef.current.play().catch(error => {
-                        console.log("Audio autoplay prevented:", error);
-                    });
-                }
-            }, 3200);
-            
-            return () => {
-                clearTimeout(timer);
-                clearTimeout(audioTimer);
-            };
-        }, []);
+            if (!isLoading) {
+                const timer = setTimeout(() => {
+                    setLineExpanded(false);
+                    // Completely hide the video after collapse animation
+                    setTimeout(() => {
+                        setVideoCollapsed(true);
+                    }, 1000); // Wait for the collapse transition to finish
+                }, 3000);
+                
+                // Start playing audio after opening animation
+                const audioTimer = setTimeout(() => {
+                    if (audioRef.current) {
+                        audioRef.current.play().catch(error => {
+                            console.log("Audio autoplay prevented:", error);
+                        });
+                    }
+                }, 3200);
+                
+                return () => {
+                    clearTimeout(timer);
+                    clearTimeout(audioTimer);
+                };
+            }
+        }, [isLoading]);
 
         const isInView = (index) => {
             if (!workRefs.current[index]) return false;
@@ -285,515 +339,527 @@
         const contactTitleProgress = Math.max(0, Math.min(1, (scrollY - window.innerHeight * 4.5) / 400));
 
         return (
-            <div className="text-white min-h-screen relative bg-black">
-                {/* Background Audio */}
-                <audio ref={audioRef} loop>
-                    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
-                </audio>
+            <>
+                {/* Loading Screen */}
+                {isLoading && (
+                    <div className="loading-screen">
+                        <div className="loader mb-6"></div>
+                        <p className="text-xl tracking-widest text-gray-400">LOADING...</p>
+                    </div>
+                )}
 
-                {/* Opening Video Animation */}
-                <div 
-                    className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
-                    style={{
-                        height: lineExpanded ? '100vh' : '8px',
-                        zIndex: 50
-                    }}
-                >
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="w-full h-full object-cover"
-                        style={{
-                            filter: 'brightness(1.2)'
-                        }}
-                    >
-                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
-                    </video>
-                </div>
+                <div className="text-white min-h-screen relative bg-black">
+                    {/* Background Audio */}
+                    <audio ref={audioRef} loop>
+                        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+                    </audio>
 
-                {/* Hero Section - No Background Image */}
-                <section 
-                    className="relative min-h-screen flex items-center justify-center overflow-hidden"
-                    style={{
-                        backgroundColor: '#000000',
-                        zIndex: 10
-                    }}
-                >
-                    <div className="relative z-10 px-6 max-w-7xl w-full">
-                        <div className="flex items-center justify-center gap-8 mb-16">
-                            {/* Portrait Image */}
-                            <div 
-                                className="flex-shrink-0 w-28 h-28 rounded-lg overflow-hidden shadow-2xl slide-up-fade"
-                                style={{
-                                    animationDelay: '3.2s',
-                                    opacity: 0,
-                                    backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80')`,
-                                    backgroundSize: 'cover',
-                                    backgroundPosition: 'center',
-                                    backgroundColor: '#3f3f46'
-                                }}
-                            />
-                            
-                            {/* Name */}
-                            <div>
-                                <h1 
-                                    className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
-                                    style={{
-                                        animationDelay: '3.4s',
-                                        opacity: 0
-                                    }}
-                                >
-                                    JOHN
-                                </h1>
-                                <h1 
-                                    className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
-                                    style={{
-                                        animationDelay: '3.6s',
-                                        opacity: 0
-                                    }}
-                                >
-                                    SMITH
-                                </h1>
-                            </div>
-                        </div>
-                        
-                        <p className="text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center" style={{ color: '#e5e7eb' }}>
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '3.8s', opacity: 0 }}>Award-winning</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '3.9s', opacity: 0 }}>cinematographer</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4s', opacity: 0 }}>specializing</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.1s', opacity: 0 }}>in</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.2s', opacity: 0 }}>narrative</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.3s', opacity: 0 }}>storytelling,</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.4s', opacity: 0 }}>commercial</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.5s', opacity: 0 }}>campaigns,</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.6s', opacity: 0 }}>and</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.7s', opacity: 0 }}>documentary</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.8s', opacity: 0 }}>filmmaking.</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '4.9s', opacity: 0 }}>Based</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '5s', opacity: 0 }}>in</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '5.1s', opacity: 0 }}>Los</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '5.2s', opacity: 0 }}>Angeles,</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '5.3s', opacity: 0 }}>working</span>{' '}
-                            <span className="inline-block slide-up-fade" style={{ animationDelay: '5.4s', opacity: 0 }}>worldwide.</span>
-                        </p>
-
+                    {/* Opening Video Animation - Completely Disappears After Collapse */}
+                    {!videoCollapsed && (
                         <div 
-                            className="mt-16 flex items-center justify-center gap-3 text-sm tracking-widest slide-up-fade"
-                            style={{ 
-                                animationDelay: '5.6s',
-                                opacity: 0,
-                                color: '#d1d5db'
+                            className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
+                            style={{
+                                height: lineExpanded ? '100vh' : '8px',
+                                zIndex: 50
                             }}
                         >
-                            <span>SCROLL TO VIEW MORE</span>
-                            <div className="animate-bounce">↓</div>
+                            <video
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                className="w-full h-full object-cover"
+                                style={{
+                                    filter: 'brightness(1.2)'
+                                }}
+                            >
+                                <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
+                            </video>
                         </div>
-                    </div>
-                </section>
+                    )}
 
-                {/* About Section with Background Video */}
-                <section className="relative py-32 px-6 overflow-hidden min-h-screen flex items-center" style={{ zIndex: 10 }}>
-                    {/* Background Video - No Controls */}
-                    <video
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className="absolute inset-0 w-full h-full object-cover"
+                    {/* Hero Section */}
+                    <section 
+                        className="relative min-h-screen flex items-center justify-center overflow-hidden"
                         style={{
-                            zIndex: 1
+                            backgroundColor: '#000000',
+                            zIndex: 10
                         }}
                     >
-                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
-                    </video>
-                    
-                    {/* Dark Overlay */}
-                    <div className="absolute inset-0 bg-black opacity-60" style={{ zIndex: 2 }} />
-                    
-                    <div className="relative z-10 max-w-5xl mx-auto">
-                        <p className="text-3xl md:text-5xl font-light leading-relaxed text-gray-300">
-                            <span 
-                                className="inline-block"
-                                style={{
-                                    opacity: aboutTextOpacity,
-                                    transform: `translateY(${Math.max(0, 20 - aboutTextOpacity * 20)}px)`,
-                                    transition: 'all 0.6s ease-out'
-                                }}
-                            >
-                                I craft visual narratives that resonate. 
-                            </span>
-                            {' '}
-                            <span 
-                                className="inline-block"
-                                style={{
-                                    opacity: Math.max(0, aboutTextOpacity - 0.2),
-                                    transform: `translateY(${Math.max(0, 20 - (aboutTextOpacity - 0.2) * 20)}px)`,
-                                    transition: 'all 0.6s ease-out 0.1s'
-                                }}
-                            >
-                                With over <span className="text-white font-normal">10 years</span> of experience behind the lens, 
-                            </span>
-                            {' '}
-                            <span 
-                                className="inline-block"
-                                style={{
-                                    opacity: Math.max(0, aboutTextOpacity - 0.4),
-                                    transform: `translateY(${Math.max(0, 20 - (aboutTextOpacity - 0.4) * 20)}px)`,
-                                    transition: 'all 0.6s ease-out 0.2s'
-                                }}
-                            >
-                                I've collaborated with leading brands and filmmakers to create compelling stories 
-                            </span>
-                            {' '}
-                            <span 
-                                className="inline-block"
-                                style={{
-                                    opacity: Math.max(0, aboutTextOpacity - 0.6),
-                                    transform: `translateY(${Math.max(0, 20 - (aboutTextOpacity - 0.6) * 20)}px)`,
-                                    transition: 'all 0.6s ease-out 0.3s'
-                                }}
-                            >
-                                through <span className="text-white font-normal">cinematography</span>, 
-                                <span className="text-white font-normal"> lighting</span>, and 
-                                <span className="text-white font-normal"> visual composition</span>.
-                            </span>
-                        </p>
-                    </div>
-                </section>
-
-                {/* Featured Work Title */}
-                <section className="relative py-20 px-6 overflow-hidden" style={{ zIndex: 10 }}>
-                    <div className="relative z-10 max-w-7xl mx-auto">
-                        <h2 
-                            className="text-5xl md:text-7xl font-bold text-white"
-                            style={{
-                                opacity: workTitleProgress,
-                                transform: `translateY(${Math.max(0, 20 - workTitleProgress * 20)}px)`,
-                                transition: 'all 0.4s ease-out'
-                            }}
-                        >
-                            FEATURED
-                        </h2>
-                        <h3 
-                            className="text-5xl md:text-7xl font-bold pulse-glow mt-2"
-                            style={{ 
-                                opacity: Math.max(0, workTitleProgress - 0.2),
-                                transform: `translateY(${Math.max(0, 20 - (workTitleProgress - 0.2) * 20)}px)`,
-                                transition: 'all 0.4s ease-out 0.1s',
-                                color: '#ffffff'
-                            }}
-                        >
-                            WORK
-                        </h3>
-                    </div>
-                </section>
-
-                {/* Work Grid */}
-                <section className="pb-32 px-6" style={{ zIndex: 10, position: 'relative' }}>
-                    <div className="max-w-7xl mx-auto space-y-1">
-                        {projects.map((project, idx) => {
-                            const inView = isInView(idx);
-                            
-                            return (
+                        <div className="relative z-10 px-6 max-w-7xl w-full">
+                            <div className="flex items-center justify-center gap-8 mb-16">
+                                {/* Portrait Image */}
                                 <div 
-                                    key={project.id}
-                                    ref={el => workRefs.current[idx] = el}
-                                    onClick={() => setSelectedProject(project)}
-                                    className="group relative border-y border-white border-opacity-10 hover:border-opacity-30 transition-all duration-500 overflow-hidden cursor-pointer"
-                                >
-                                    <div className="py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-0">
-                                        <div 
-                                            className="md:w-80 flex-shrink-0 bg-zinc-900 relative overflow-hidden rounded-lg"
-                                            style={{
-                                                opacity: inView ? 1 : 0,
-                                                transition: 'all 1s ease-out 0.2s',
-                                                aspectRatio: '16/9',
-                                                backgroundImage: `url('${project.thumbnail}')`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center'
-                                            }}
-                                        >
-                                            <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
-                                        </div>
-
-                                        <div 
-                                            className="flex-grow md:pl-12"
-                                            style={{
-                                                opacity: inView ? 1 : 0,
-                                                transition: 'all 1s ease-out 0.4s'
-                                            }}
-                                        >
-                                            <h3 className="text-3xl md:text-4xl font-bold mb-2 group-hover:translate-x-4 transition-transform duration-500">
-                                                {project.title}
-                                            </h3>
-                                            <p className="text-gray-500 text-lg mb-1">{project.client}</p>
-                                            <p className="text-gray-600 text-sm">{project.type}</p>
-                                        </div>
-
-                                        <div 
-                                            className="md:w-32 flex-shrink-0 md:text-right"
-                                            style={{
-                                                opacity: inView ? 1 : 0,
-                                                transition: 'all 1s ease-out 0.5s'
-                                            }}
-                                        >
-                                            <span className="text-2xl text-gray-600 group-hover:text-white transition-colors duration-500">
-                                                {project.year}
-                                            </span>
-                                        </div>
-
-                                        <div 
-                                            className="md:w-20 flex-shrink-0 md:text-right"
-                                            style={{
-                                                opacity: inView ? 1 : 0,
-                                                transition: 'all 1s ease-out 0.6s'
-                                            }}
-                                        >
-                                            <span className="text-3xl arrow-pulse inline-block">
-                                                →
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none" />
+                                    className="flex-shrink-0 w-28 h-28 rounded-lg overflow-hidden shadow-2xl slide-up-fade"
+                                    style={{
+                                        animationDelay: '3.2s',
+                                        opacity: 0,
+                                        backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80')`,
+                                        backgroundSize: 'cover',
+                                        backgroundPosition: 'center',
+                                        backgroundColor: '#3f3f46'
+                                    }}
+                                />
+                                
+                                {/* Name */}
+                                <div>
+                                    <h1 
+                                        className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
+                                        style={{
+                                            animationDelay: '3.4s',
+                                            opacity: 0
+                                        }}
+                                    >
+                                        JOHN
+                                    </h1>
+                                    <h1 
+                                        className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
+                                        style={{
+                                            animationDelay: '3.6s',
+                                            opacity: 0
+                                        }}
+                                    >
+                                        SMITH
+                                    </h1>
                                 </div>
-                            );
-                        })}
-                    </div>
-                </section>
-
-                {/* Social Media Reels Section */}
-                <section className="relative py-20 px-6 overflow-hidden" style={{ zIndex: 10 }}>
-                    <div className="relative z-10 max-w-7xl mx-auto">
-                        <h2 className="text-5xl md:text-7xl font-bold text-white mb-4">
-                            SOCIAL MEDIA
-                        </h2>
-                        <h2 className="text-5xl md:text-7xl font-bold pulse-glow mb-16" style={{ color: '#ffffff' }}>
-                            REELS
-                        </h2>
-
-                        {/* Vertical Videos in One Row - No Controls */}
-                        <div className="flex justify-center gap-6 overflow-x-auto">
-                            {/* Reel 1 */}
-                            <div className="relative group flex-shrink-0">
-                                <video 
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="rounded-lg shadow-2xl"
-                                    style={{
-                                        width: '250px',
-                                        aspectRatio: '9/16',
-                                        objectFit: 'cover'
-                                    }}
-                                >
-                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
-                                </video>
                             </div>
+                            
+                            <p className="text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center" style={{ color: '#e5e7eb' }}>
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.8s', opacity: 0 }}>Award-winning</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.9s', opacity: 0 }}>cinematographer</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4s', opacity: 0 }}>specializing</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.1s', opacity: 0 }}>in</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.2s', opacity: 0 }}>narrative</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.3s', opacity: 0 }}>storytelling,</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.4s', opacity: 0 }}>commercial</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.5s', opacity: 0 }}>campaigns,</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.6s', opacity: 0 }}>and</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.7s', opacity: 0 }}>documentary</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.8s', opacity: 0 }}>filmmaking.</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.9s', opacity: 0 }}>Based</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5s', opacity: 0 }}>in</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.1s', opacity: 0 }}>Los</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.2s', opacity: 0 }}>Angeles,</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.3s', opacity: 0 }}>working</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.4s', opacity: 0 }}>worldwide.</span>
+                            </p>
 
-                            {/* Reel 2 */}
-                            <div className="relative group flex-shrink-0">
-                                <video 
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="rounded-lg shadow-2xl"
-                                    style={{
-                                        width: '250px',
-                                        aspectRatio: '9/16',
-                                        objectFit: 'cover'
-                                    }}
-                                >
-                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4" />
-                                </video>
-                            </div>
-
-                            {/* Reel 3 */}
-                            <div className="relative group flex-shrink-0">
-                                <video 
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="rounded-lg shadow-2xl"
-                                    style={{
-                                        width: '250px',
-                                        aspectRatio: '9/16',
-                                        objectFit: 'cover'
-                                    }}
-                                >
-                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" type="video/mp4" />
-                                </video>
+                            <div 
+                                className="mt-16 flex items-center justify-center gap-3 text-sm tracking-widest slide-up-fade"
+                                style={{ 
+                                    animationDelay: '5.6s',
+                                    opacity: 0,
+                                    color: '#d1d5db'
+                                }}
+                            >
+                                <span>SCROLL TO VIEW MORE</span>
+                                <div className="animate-bounce">↓</div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                {/* Contact Section */}
-                <section className="relative min-h-screen flex items-center justify-center px-6 py-32 overflow-hidden" style={{ zIndex: 10 }}>
-                    <div className="relative z-10 max-w-5xl w-full">
-                        <div className="text-center mb-20">
+                    {/* About Section with Background Video */}
+                    <section className="relative py-32 px-6 overflow-hidden min-h-screen flex items-center" style={{ zIndex: 10 }}>
+                        {/* Background Video - No Controls */}
+                        <video
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="absolute inset-0 w-full h-full object-cover"
+                            style={{
+                                zIndex: 1
+                            }}
+                        >
+                            <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
+                        </video>
+                        
+                        {/* Dark Overlay */}
+                        <div className="absolute inset-0 bg-black opacity-60" style={{ zIndex: 2 }} />
+                        
+                        <div className="relative z-10 max-w-5xl mx-auto">
+                            <p className="text-3xl md:text-5xl font-light leading-relaxed text-gray-300">
+                                <span 
+                                    className="inline-block"
+                                    style={{
+                                        opacity: aboutTextOpacity,
+                                        transform: `translateY(${Math.max(0, 20 - aboutTextOpacity * 20)}px)`,
+                                        transition: 'all 0.6s ease-out'
+                                    }}
+                                >
+                                    I craft visual narratives that resonate. 
+                                </span>
+                                {' '}
+                                <span 
+                                    className="inline-block"
+                                    style={{
+                                        opacity: Math.max(0, aboutTextOpacity - 0.2),
+                                        transform: `translateY(${Math.max(0, 20 - (aboutTextOpacity - 0.2) * 20)}px)`,
+                                        transition: 'all 0.6s ease-out 0.1s'
+                                    }}
+                                >
+                                    With over <span className="text-white font-normal">10 years</span> of experience behind the lens, 
+                                </span>
+                                {' '}
+                                <span 
+                                    className="inline-block"
+                                    style={{
+                                        opacity: Math.max(0, aboutTextOpacity - 0.4),
+                                        transform: `translateY(${Math.max(0, 20 - (aboutTextOpacity - 0.4) * 20)}px)`,
+                                        transition: 'all 0.6s ease-out 0.2s'
+                                    }}
+                                >
+                                    I've collaborated with leading brands and filmmakers to create compelling stories 
+                                </span>
+                                {' '}
+                                <span 
+                                    className="inline-block"
+                                    style={{
+                                        opacity: Math.max(0, aboutTextOpacity - 0.6),
+                                        transform: `translateY(${Math.max(0, 20 - (aboutTextOpacity - 0.6) * 20)}px)`,
+                                        transition: 'all 0.6s ease-out 0.3s'
+                                    }}
+                                >
+                                    through <span className="text-white font-normal">cinematography</span>, 
+                                    <span className="text-white font-normal"> lighting</span>, and 
+                                    <span className="text-white font-normal"> visual composition</span>.
+                                </span>
+                            </p>
+                        </div>
+                    </section>
+
+                    {/* Featured Work Title */}
+                    <section className="relative py-20 px-6 overflow-hidden" style={{ zIndex: 10 }}>
+                        <div className="relative z-10 max-w-7xl mx-auto">
                             <h2 
-                                className="text-5xl md:text-7xl font-bold shimmer-text"
+                                className="text-5xl md:text-7xl font-bold text-white"
                                 style={{
-                                    opacity: contactTitleProgress,
-                                    transform: `translateY(${Math.max(0, 20 - contactTitleProgress * 20)}px)`,
+                                    opacity: workTitleProgress,
+                                    transform: `translateY(${Math.max(0, 20 - workTitleProgress * 20)}px)`,
                                     transition: 'all 0.4s ease-out'
                                 }}
                             >
-                                LET'S CREATE
+                                FEATURED
                             </h2>
                             <h3 
                                 className="text-5xl md:text-7xl font-bold pulse-glow mt-2"
                                 style={{ 
-                                    opacity: Math.max(0, contactTitleProgress - 0.2),
-                                    transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.2) * 20)}px)`,
+                                    opacity: Math.max(0, workTitleProgress - 0.2),
+                                    transform: `translateY(${Math.max(0, 20 - (workTitleProgress - 0.2) * 20)}px)`,
                                     transition: 'all 0.4s ease-out 0.1s',
                                     color: '#ffffff'
                                 }}
                             >
-                                TOGETHER
+                                WORK
                             </h3>
                         </div>
+                    </section>
 
-                        <div className="grid md:grid-cols-2 gap-16 text-center md:text-left">
-                            <div 
-                                className="space-y-3"
-                                style={{
-                                    opacity: Math.max(0, contactTitleProgress - 0.4),
-                                    transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.4) * 20)}px)`,
-                                    transition: 'all 0.6s ease-out 0.3s'
-                                }}
-                            >
-                                <p className="text-sm tracking-widest text-gray-600">EMAIL</p>
-                                <a 
-                                    href="mailto:john@cinematographer.com" 
-                                    className="text-3xl md:text-4xl hover:text-gray-400 transition-colors block"
-                                >
-                                    john@cinematographer.com
-                                </a>
-                            </div>
-
-                            <div 
-                                className="space-y-3"
-                                style={{
-                                    opacity: Math.max(0, contactTitleProgress - 0.5),
-                                    transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.5) * 20)}px)`,
-                                    transition: 'all 0.6s ease-out 0.4s'
-                                }}
-                            >
-                                <p className="text-sm tracking-widest text-gray-600">PHONE</p>
-                                <a 
-                                    href="tel:+13105551234" 
-                                    className="text-3xl md:text-4xl hover:text-gray-400 transition-colors block"
-                                >
-                                    +1 (310) 555-1234
-                                </a>
-                            </div>
-
-                            <div 
-                                className="space-y-3"
-                                style={{
-                                    opacity: Math.max(0, contactTitleProgress - 0.6),
-                                    transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.6) * 20)}px)`,
-                                    transition: 'all 0.6s ease-out 0.5s'
-                                }}
-                            >
-                                <p className="text-sm tracking-widest text-gray-600">LOCATION</p>
-                                <p className="text-3xl md:text-4xl">Los Angeles, CA</p>
-                            </div>
-
-                            <div 
-                                className="space-y-3"
-                                style={{
-                                    opacity: Math.max(0, contactTitleProgress - 0.7),
-                                    transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.7) * 20)}px)`,
-                                    transition: 'all 0.6s ease-out 0.6s'
-                                }}
-                            >
-                                <p className="text-sm tracking-widest text-gray-600">FOLLOW</p>
-                                <div className="flex gap-8 text-2xl justify-center md:justify-start">
-                                    <a href="#" className="hover:text-gray-400 transition-colors">Instagram</a>
-                                    <a href="#" className="hover:text-gray-400 transition-colors">Vimeo</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Footer */}
-                <footer className="relative z-10 border-t border-white border-opacity-10 py-8 px-6 text-center text-gray-600 text-sm tracking-wider">
-                    <p>© 2024 JOHN SMITH CINEMATOGRAPHY. ALL RIGHTS RESERVED.</p>
-                </footer>
-
-                {/* Project Detail Page */}
-                {selectedProject && (
-                    <div 
-                        className="fixed inset-0 bg-black z-50 overflow-y-auto"
-                        style={{ paddingTop: '60px' }}
-                    >
-                        {/* Close Button */}
-                        <button 
-                            onClick={() => setSelectedProject(null)}
-                            className="fixed top-8 right-8 text-white text-4xl hover:text-gray-400 transition-colors z-50"
-                        >
-                            ×
-                        </button>
-
-                        {/* Project Header */}
-                        <div className="max-w-7xl mx-auto px-6 py-12">
-                            <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">{selectedProject.title}</h1>
-                            <div className="flex gap-6 text-gray-400 text-xl mb-6">
-                                <span>{selectedProject.client}</span>
-                                <span>•</span>
-                                <span>{selectedProject.year}</span>
-                                <span>•</span>
-                                <span>{selectedProject.type}</span>
-                            </div>
-                            <p className="text-2xl text-gray-300 max-w-4xl mb-16">{selectedProject.description}</p>
-
-                            {/* Videos - WITH CONTROLS */}
-                            <div className="mb-16">
-                                <div className="grid grid-cols-1 gap-8">
-                                    {selectedProject.videos.map((video, idx) => (
-                                        <div key={idx} className="w-full">
-                                            <video 
-                                                controls 
-                                                className="w-full rounded-lg shadow-2xl"
+                    {/* Work Grid */}
+                    <section className="pb-32 px-6" style={{ zIndex: 10, position: 'relative' }}>
+                        <div className="max-w-7xl mx-auto space-y-1">
+                            {projects.map((project, idx) => {
+                                const inView = isInView(idx);
+                                
+                                return (
+                                    <div 
+                                        key={project.id}
+                                        ref={el => workRefs.current[idx] = el}
+                                        onClick={() => setSelectedProject(project)}
+                                        className="group relative border-y border-white border-opacity-10 hover:border-opacity-30 transition-all duration-500 overflow-hidden cursor-pointer"
+                                    >
+                                        <div className="py-12 flex flex-col md:flex-row md:items-center gap-6 md:gap-0">
+                                            <div 
+                                                className="md:w-80 flex-shrink-0 bg-zinc-900 relative overflow-hidden rounded-lg"
+                                                style={{
+                                                    opacity: inView ? 1 : 0,
+                                                    transition: 'all 1s ease-out 0.2s',
+                                                    aspectRatio: '16/9',
+                                                    backgroundImage: `url('${project.thumbnail}')`,
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'center'
+                                                }}
                                             >
-                                                <source src={video} type="video/mp4" />
-                                                Your browser does not support the video tag.
-                                            </video>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                                                <div className="absolute inset-0 bg-black opacity-40 group-hover:opacity-20 transition-opacity duration-500" />
+                                            </div>
 
-                            {/* Gallery */}
-                            <div className="mb-16">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {selectedProject.gallery.map((image, idx) => (
-                                        <div 
-                                            key={idx} 
-                                            className="w-full bg-zinc-800 rounded-lg overflow-hidden"
-                                            style={{
-                                                aspectRatio: '16/9',
-                                                backgroundImage: `url('${image}')`,
-                                                backgroundSize: 'cover',
-                                                backgroundPosition: 'center'
-                                            }}
-                                        />
-                                    ))}
+                                            <div 
+                                                className="flex-grow md:pl-12"
+                                                style={{
+                                                    opacity: inView ? 1 : 0,
+                                                    transition: 'all 1s ease-out 0.4s'
+                                                }}
+                                            >
+                                                <h3 className="text-3xl md:text-4xl font-bold mb-2 group-hover:translate-x-4 transition-transform duration-500">
+                                                    {project.title}
+                                                </h3>
+                                                <p className="text-gray-500 text-lg mb-1">{project.client}</p>
+                                                <p className="text-gray-600 text-sm">{project.type}</p>
+                                            </div>
+
+                                            <div 
+                                                className="md:w-32 flex-shrink-0 md:text-right"
+                                                style={{
+                                                    opacity: inView ? 1 : 0,
+                                                    transition: 'all 1s ease-out 0.5s'
+                                                }}
+                                            >
+                                                <span className="text-2xl text-gray-600 group-hover:text-white transition-colors duration-500">
+                                                    {project.year}
+                                                </span>
+                                            </div>
+
+                                            <div 
+                                                className="md:w-20 flex-shrink-0 md:text-right"
+                                                style={{
+                                                    opacity: inView ? 1 : 0,
+                                                    transition: 'all 1s ease-out 0.6s'
+                                                }}
+                                            >
+                                                <span className="text-3xl arrow-pulse inline-block">
+                                                    →
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-5 transition-opacity duration-500 pointer-events-none" />
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </section>
+
+                    {/* Social Media Reels Section */}
+                    <section className="relative py-20 px-6 overflow-hidden" style={{ zIndex: 10 }}>
+                        <div className="relative z-10 max-w-7xl mx-auto">
+                            <h2 className="text-5xl md:text-7xl font-bold text-white mb-4">
+                                SOCIAL MEDIA
+                            </h2>
+                            <h2 className="text-5xl md:text-7xl font-bold pulse-glow mb-16" style={{ color: '#ffffff' }}>
+                                REELS
+                            </h2>
+
+                            {/* Vertical Videos in One Row - No Controls */}
+                            <div className="flex justify-center gap-6 overflow-x-auto">
+                                {/* Reel 1 */}
+                                <div className="relative group flex-shrink-0">
+                                    <video 
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
+                                        className="rounded-lg shadow-2xl"
+                                        style={{
+                                            width: '250px',
+                                            aspectRatio: '9/16',
+                                            objectFit: 'cover'
+                                        }}
+                                    >
+                                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
+                                    </video>
+                                </div>
+
+                                {/* Reel 2 */}
+                                <div className="relative group flex-shrink-0">
+                                    <video 
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
+                                        className="rounded-lg shadow-2xl"
+                                        style={{
+                                            width: '250px',
+                                            aspectRatio: '9/16',
+                                            objectFit: 'cover'
+                                        }}
+                                    >
+                                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4" type="video/mp4" />
+                                    </video>
+                                </div>
+
+                                {/* Reel 3 */}
+                                <div className="relative group flex-shrink-0">
+                                    <video 
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
+                                        className="rounded-lg shadow-2xl"
+                                        style={{
+                                            width: '250px',
+                                            aspectRatio: '9/16',
+                                            objectFit: 'cover'
+                                        }}
+                                    >
+                                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4" type="video/mp4" />
+                                    </video>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </div>
+                    </section>
+
+                    {/* Contact Section */}
+                    <section className="relative min-h-screen flex items-center justify-center px-6 py-32 overflow-hidden" style={{ zIndex: 10 }}>
+                        <div className="relative z-10 max-w-5xl w-full">
+                            <div className="text-center mb-20">
+                                <h2 
+                                    className="text-5xl md:text-7xl font-bold shimmer-text"
+                                    style={{
+                                        opacity: contactTitleProgress,
+                                        transform: `translateY(${Math.max(0, 20 - contactTitleProgress * 20)}px)`,
+                                        transition: 'all 0.4s ease-out'
+                                    }}
+                                >
+                                    LET'S CREATE
+                                </h2>
+                                <h3 
+                                    className="text-5xl md:text-7xl font-bold pulse-glow mt-2"
+                                    style={{ 
+                                        opacity: Math.max(0, contactTitleProgress - 0.2),
+                                        transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.2) * 20)}px)`,
+                                        transition: 'all 0.4s ease-out 0.1s',
+                                        color: '#ffffff'
+                                    }}
+                                >
+                                    TOGETHER
+                                </h3>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-16 text-center md:text-left">
+                                <div 
+                                    className="space-y-3"
+                                    style={{
+                                        opacity: Math.max(0, contactTitleProgress - 0.4),
+                                        transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.4) * 20)}px)`,
+                                        transition: 'all 0.6s ease-out 0.3s'
+                                    }}
+                                >
+                                    <p className="text-sm tracking-widest text-gray-600">EMAIL</p>
+                                    <a 
+                                        href="mailto:john@cinematographer.com" 
+                                        className="text-3xl md:text-4xl hover:text-gray-400 transition-colors block"
+                                    >
+                                        john@cinematographer.com
+                                    </a>
+                                </div>
+
+                                <div 
+                                    className="space-y-3"
+                                    style={{
+                                        opacity: Math.max(0, contactTitleProgress - 0.5),
+                                        transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.5) * 20)}px)`,
+                                        transition: 'all 0.6s ease-out 0.4s'
+                                    }}
+                                >
+                                    <p className="text-sm tracking-widest text-gray-600">PHONE</p>
+                                    <a 
+                                        href="tel:+13105551234" 
+                                        className="text-3xl md:text-4xl hover:text-gray-400 transition-colors block"
+                                    >
+                                        +1 (310) 555-1234
+                                    </a>
+                                </div>
+
+                                <div 
+                                    className="space-y-3"
+                                    style={{
+                                        opacity: Math.max(0, contactTitleProgress - 0.6),
+                                        transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.6) * 20)}px)`,
+                                        transition: 'all 0.6s ease-out 0.5s'
+                                    }}
+                                >
+                                    <p className="text-sm tracking-widest text-gray-600">LOCATION</p>
+                                    <p className="text-3xl md:text-4xl">Los Angeles, CA</p>
+                                </div>
+
+                                <div 
+                                    className="space-y-3"
+                                    style={{
+                                        opacity: Math.max(0, contactTitleProgress - 0.7),
+                                        transform: `translateY(${Math.max(0, 20 - (contactTitleProgress - 0.7) * 20)}px)`,
+                                        transition: 'all 0.6s ease-out 0.6s'
+                                    }}
+                                >
+                                    <p className="text-sm tracking-widest text-gray-600">FOLLOW</p>
+                                    <div className="flex gap-8 text-2xl justify-center md:justify-start">
+                                        <a href="#" className="hover:text-gray-400 transition-colors">Instagram</a>
+                                        <a href="#" className="hover:text-gray-400 transition-colors">Vimeo</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="relative z-10 border-t border-white border-opacity-10 py-8 px-6 text-center text-gray-600 text-sm tracking-wider">
+                        <p>© 2024 JOHN SMITH CINEMATOGRAPHY. ALL RIGHTS RESERVED.</p>
+                    </footer>
+
+                    {/* Project Detail Page */}
+                    {selectedProject && (
+                        <div 
+                            className="fixed inset-0 bg-black z-50 overflow-y-auto"
+                            style={{ paddingTop: '60px' }}
+                        >
+                            {/* Close Button */}
+                            <button 
+                                onClick={() => setSelectedProject(null)}
+                                className="fixed top-8 right-8 text-white text-4xl hover:text-gray-400 transition-colors z-50"
+                            >
+                                ×
+                            </button>
+
+                            {/* Project Header */}
+                            <div className="max-w-7xl mx-auto px-6 py-12">
+                                <h1 className="text-5xl md:text-7xl font-bold text-white mb-4">{selectedProject.title}</h1>
+                                <div className="flex gap-6 text-gray-400 text-xl mb-6">
+                                    <span>{selectedProject.client}</span>
+                                    <span>•</span>
+                                    <span>{selectedProject.year}</span>
+                                    <span>•</span>
+                                    <span>{selectedProject.type}</span>
+                                </div>
+                                <p className="text-2xl text-gray-300 max-w-4xl mb-16">{selectedProject.description}</p>
+
+                                {/* Videos - WITH CONTROLS */}
+                                <div className="mb-16">
+                                    <div className="grid grid-cols-1 gap-8">
+                                        {selectedProject.videos.map((video, idx) => (
+                                            <div key={idx} className="w-full">
+                                                <video 
+                                                    controls 
+                                                    className="w-full rounded-lg shadow-2xl"
+                                                >
+                                                    <source src={video} type="video/mp4" />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Gallery */}
+                                <div className="mb-16">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {selectedProject.gallery.map((image, idx) => (
+                                            <div 
+                                                key={idx} 
+                                                className="w-full bg-zinc-800 rounded-lg overflow-hidden"
+                                                style={{
+                                                    aspectRatio: '16/9',
+                                                    backgroundImage: `url('${image}')`,
+                                                    backgroundSize: 'cover',
+                                                    backgroundPosition: 'center'
+                                                }}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            </>
         );
     };
 
