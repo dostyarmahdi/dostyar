@@ -88,23 +88,6 @@
         }
     }
 
-    @keyframes bubble-rise-up {
-        0% {
-            transform: translateY(150vh) scale(0.8);
-            opacity: 0;
-        }
-        10% {
-            opacity: 1;
-        }
-        90% {
-            opacity: 1;
-        }
-        100% {
-            transform: translateY(-150vh) scale(1.2);
-            opacity: 0;
-        }
-    }
-
     .animate-float {
         animation: float 3s ease-in-out infinite;
     }
@@ -154,15 +137,6 @@
     .split-text:hover {
         transform: scale(1.1) rotate(-2deg);
     }
-
-    .bubble-rise-up {
-        animation: bubble-rise-up 3s ease-out forwards;
-    }
-
-    .invert-bubble {
-        mix-blend-mode: difference;
-        filter: brightness(2);
-    }
 </style>
 
 <script type="text/babel">
@@ -172,13 +146,7 @@
         const [scrollY, setScrollY] = useState(0);
         const [lineExpanded, setLineExpanded] = useState(true);
         const [selectedProject, setSelectedProject] = useState(null);
-        const [bubbles, setBubbles] = useState([]);
         const workRefs = useRef([]);
-        const triggeredSections = useRef({
-            section1: false,
-            section2: false,
-            section3: false
-        });
 
         useEffect(() => {
             const handleScroll = () => {
@@ -187,39 +155,10 @@
                 
                 const windowHeight = window.innerHeight;
                 
-                // Section 1: Between Hero (0-1vh) and About (1-2vh)
-                // Trigger around 0.9vh
-                const section1Trigger = windowHeight * 0.9;
-                if (currentScrollY >= section1Trigger && currentScrollY < windowHeight * 1.1 && !triggeredSections.current.section1) {
-                    triggeredSections.current.section1 = true;
-                    triggerBubbles();
-                }
-                
-                // Section 2: Between Film Strip (around 2.5vh) and Featured Work (around 3vh)
-                // Trigger around 2.4vh
-                const section2Trigger = windowHeight * 2.4;
-                if (currentScrollY >= section2Trigger && currentScrollY < windowHeight * 2.6 && !triggeredSections.current.section2) {
-                    triggeredSections.current.section2 = true;
-                    triggerBubbles();
-                }
-                
-                // Section 3: Social Media section (around 4.5vh)
-                // Trigger around 4.3vh
-                const section3Trigger = windowHeight * 4.3;
-                if (currentScrollY >= section3Trigger && currentScrollY < windowHeight * 4.5 && !triggeredSections.current.section3) {
-                    triggeredSections.current.section3 = true;
-                    triggerBubbles();
-                }
-                
-                // Reset triggers when scrolling back up
-                if (currentScrollY < section1Trigger - 100) {
-                    triggeredSections.current.section1 = false;
-                }
-                if (currentScrollY < section2Trigger - 100) {
-                    triggeredSections.current.section2 = false;
-                }
-                if (currentScrollY < section3Trigger - 100) {
-                    triggeredSections.current.section3 = false;
+                // Reset line expansion when scrolling back to top
+                if (currentScrollY < windowHeight * 0.1) {
+                    setLineExpanded(true);
+                    setTimeout(() => setLineExpanded(false), 3000);
                 }
             };
             
@@ -231,36 +170,6 @@
             const timer = setTimeout(() => setLineExpanded(false), 3000);
             return () => clearTimeout(timer);
         }, []);
-
-        const triggerBubbles = () => {
-            const newBubbles = [
-                {
-                    id: Date.now() + 1,
-                    left: '25%',
-                    size: Math.random() * 200 + 300, // 300-500px
-                    delay: 0
-                },
-                {
-                    id: Date.now() + 2,
-                    left: '50%',
-                    size: Math.random() * 200 + 300, // 300-500px
-                    delay: 0.2
-                },
-                {
-                    id: Date.now() + 3,
-                    left: '75%',
-                    size: Math.random() * 200 + 300, // 300-500px
-                    delay: 0.4
-                }
-            ];
-            
-            setBubbles(prev => [...prev, ...newBubbles]);
-            
-            // Remove bubbles after animation completes
-            setTimeout(() => {
-                setBubbles(prev => prev.filter(b => !newBubbles.find(nb => nb.id === b.id)));
-            }, 3500);
-        };
 
         const isInView = (index) => {
             if (!workRefs.current[index]) return false;
@@ -352,30 +261,6 @@
 
         return (
             <div className="text-white min-h-screen relative bg-black">
-                {/* Bubbles - Behind everything */}
-                {bubbles.map(bubble => (
-                    <div
-                        key={bubble.id}
-                        className="bubble-rise-up invert-bubble fixed rounded-full pointer-events-none"
-                        style={{
-                            left: bubble.left,
-                            top: 0,
-                            width: `${bubble.size}px`,
-                            height: `${bubble.size}px`,
-                            marginLeft: `-${bubble.size / 2}px`,
-                            background: `radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7) 40%, rgba(255, 255, 255, 0.4) 70%, transparent)`,
-                            boxShadow: `
-                                0 0 30px rgba(255, 255, 255, 0.6),
-                                0 0 60px rgba(255, 255, 255, 0.4),
-                                0 0 90px rgba(255, 255, 255, 0.2),
-                                inset 0 0 30px rgba(255, 255, 255, 0.3)
-                            `,
-                            zIndex: 1,
-                            animationDelay: `${bubble.delay}s`
-                        }}
-                    />
-                ))}
-
                 {/* Opening Video Animation */}
                 <div 
                     className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
@@ -394,23 +279,18 @@
                             filter: 'brightness(1.2)'
                         }}
                     >
-                        <source src="images/opening-video.mov" type="video/mp4" />
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
                     </video>
                 </div>
 
-                {/* Hero Section */}
+                {/* Hero Section - No Background Image */}
                 <section 
                     className="relative min-h-screen flex items-center justify-center overflow-hidden"
                     style={{
                         backgroundColor: '#000000',
-                        backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&q=80')`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
                         zIndex: 10
                     }}
                 >
-                    <div className="absolute inset-0 bg-black opacity-40" />
-                    
                     <div className="relative z-10 px-6 max-w-7xl w-full">
                         <div className="flex items-center justify-center gap-8 mb-16">
                             {/* Portrait Image */}
@@ -483,8 +363,25 @@
                     </div>
                 </section>
 
-                {/* About Section */}
-                <section className="relative py-32 px-6 overflow-hidden" style={{ zIndex: 10 }}>
+                {/* About Section with Background Video */}
+                <section className="relative py-32 px-6 overflow-hidden min-h-screen flex items-center" style={{ zIndex: 10 }}>
+                    {/* Background Video */}
+                    <video
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover"
+                        style={{
+                            zIndex: 1
+                        }}
+                    >
+                        <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
+                    </video>
+                    
+                    {/* Dark Overlay */}
+                    <div className="absolute inset-0 bg-black opacity-60" style={{ zIndex: 2 }} />
+                    
                     <div className="relative z-10 max-w-5xl mx-auto">
                         <p className="text-3xl md:text-5xl font-light leading-relaxed text-gray-300">
                             <span 
@@ -533,64 +430,6 @@
                                 <span className="text-white font-normal"> visual composition</span>.
                             </span>
                         </p>
-                    </div>
-                </section>
-
-                {/* Film Strip Section - 3 Videos */}
-                <section className="relative py-20 overflow-hidden" style={{ zIndex: 10 }}>
-                    <div className="max-w-7xl mx-auto px-6">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                            {/* Left Video */}
-                            <div className="w-full">
-                                <video
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="w-full rounded-lg shadow-2xl transition-transform duration-500 hover:scale-105"
-                                    style={{ 
-                                        aspectRatio: '16/9',
-                                        objectFit: 'cover'
-                                    }}
-                                >
-                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4" type="video/mp4" />
-                                </video>
-                            </div>
-
-                            {/* Center Video */}
-                            <div className="w-full">
-                                <video
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="w-full rounded-lg shadow-2xl transition-transform duration-500 hover:scale-105"
-                                    style={{ 
-                                        aspectRatio: '16/9',
-                                        objectFit: 'cover'
-                                    }}
-                                >
-                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" type="video/mp4" />
-                                </video>
-                            </div>
-
-                            {/* Right Video */}
-                            <div className="w-full">
-                                <video
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="w-full rounded-lg shadow-2xl transition-transform duration-500 hover:scale-105"
-                                    style={{ 
-                                        aspectRatio: '16/9',
-                                        objectFit: 'cover'
-                                    }}
-                                >
-                                    <source src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4" type="video/mp4" />
-                                </video>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
