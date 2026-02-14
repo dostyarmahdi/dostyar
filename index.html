@@ -98,6 +98,47 @@
         100% { opacity: 0; }
     }
 
+    @keyframes shutterOpen {
+        0% {
+            clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
+        }
+        100% {
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+        }
+    }
+
+    @keyframes lensFlare {
+        0%, 100% {
+            opacity: 0;
+            transform: translateX(-100%);
+        }
+        50% {
+            opacity: 1;
+            transform: translateX(100%);
+        }
+    }
+
+    @keyframes filmGrain {
+        0%, 100% { opacity: 0.05; }
+        50% { opacity: 0.1; }
+    }
+
+    @keyframes progressBar {
+        0% { width: 0%; }
+        100% { width: 100%; }
+    }
+
+    @keyframes scaleIn {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
     .animate-float {
         animation: float 3s ease-in-out infinite;
     }
@@ -148,15 +189,6 @@
         transform: scale(1.1) rotate(-2deg);
     }
 
-    .loader {
-        border: 4px solid rgba(255, 255, 255, 0.1);
-        border-top: 4px solid #ffffff;
-        border-radius: 50%;
-        width: 60px;
-        height: 60px;
-        animation: spin 1s linear infinite;
-    }
-
     .loading-screen {
         position: fixed;
         top: 0;
@@ -169,11 +201,118 @@
         align-items: center;
         justify-content: center;
         z-index: 9999;
-        transition: opacity 0.5s ease-out;
     }
 
     .loading-screen.fade-out {
-        animation: fadeOut 0.5s ease-out forwards;
+        animation: shutterOpen 1.5s ease-out forwards;
+    }
+
+    .camera-lens {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        animation: spin 2s linear infinite;
+    }
+
+    .camera-lens::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80%;
+        height: 80%;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .camera-lens::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+        height: 50%;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    }
+
+    .lens-flare {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+        animation: lensFlare 3s ease-in-out infinite;
+    }
+
+    .film-grain {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><filter id="noise"><feTurbulence baseFrequency="0.9" /></filter><rect width="100%" height="100%" filter="url(%23noise)" opacity="0.05"/></svg>');
+        pointer-events: none;
+        animation: filmGrain 0.5s infinite;
+    }
+
+    .progress-container {
+        width: 300px;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-top: 40px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, rgba(255,255,255,0.5), rgba(255,255,255,1));
+        animation: progressBar 3s ease-out forwards;
+    }
+
+    .loading-text {
+        margin-top: 30px;
+        font-size: 14px;
+        letter-spacing: 4px;
+        color: rgba(255, 255, 255, 0.7);
+        animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    /* Hide video controls completely */
+    video::-webkit-media-controls {
+        display: none !important;
+    }
+    
+    video::-webkit-media-controls-enclosure {
+        display: none !important;
+    }
+    
+    video::-webkit-media-controls-panel {
+        display: none !important;
+    }
+    
+    video::-webkit-media-controls-play-button {
+        display: none !important;
+    }
+    
+    video::-webkit-media-controls-start-playback-button {
+        display: none !important;
+    }
+
+    /* Remove default video styling */
+    video {
+        pointer-events: none;
+    }
+
+    /* Allow pointer events only on project detail videos */
+    .project-video {
+        pointer-events: auto;
     }
 </style>
 
@@ -185,17 +324,79 @@
         const [lineExpanded, setLineExpanded] = useState(true);
         const [selectedProject, setSelectedProject] = useState(null);
         const [isLoading, setIsLoading] = useState(true);
+        const [loadingProgress, setLoadingProgress] = useState(0);
         const [videoCollapsed, setVideoCollapsed] = useState(false);
         const workRefs = useRef([]);
         const audioRef = useRef(null);
 
         useEffect(() => {
-            // Simulate loading time to ensure content is ready
-            const loadingTimer = setTimeout(() => {
-                setIsLoading(false);
-            }, 2000); // 2 seconds loading screen
+            // Preload all videos and images
+            const preloadResources = async () => {
+                const videoUrls = [
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+                    "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+                ];
 
-            return () => clearTimeout(loadingTimer);
+                const imageUrls = [
+                    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
+                    "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&q=80",
+                    "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80",
+                    "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
+                    "https://images.unsplash.com/photo-1518837695005-2083093ee35b?w=800&q=80",
+                ];
+
+                const totalResources = videoUrls.length + imageUrls.length;
+                let loadedCount = 0;
+
+                const updateProgress = () => {
+                    loadedCount++;
+                    setLoadingProgress((loadedCount / totalResources) * 100);
+                };
+
+                // Preload videos
+                const videoPromises = videoUrls.map(url => {
+                    return new Promise((resolve) => {
+                        const video = document.createElement('video');
+                        video.src = url;
+                        video.preload = 'auto';
+                        video.onloadeddata = () => {
+                            updateProgress();
+                            resolve();
+                        };
+                        video.onerror = () => {
+                            updateProgress();
+                            resolve();
+                        };
+                    });
+                });
+
+                // Preload images
+                const imagePromises = imageUrls.map(url => {
+                    return new Promise((resolve) => {
+                        const img = new Image();
+                        img.src = url;
+                        img.onload = () => {
+                            updateProgress();
+                            resolve();
+                        };
+                        img.onerror = () => {
+                            updateProgress();
+                            resolve();
+                        };
+                    });
+                });
+
+                await Promise.all([...videoPromises, ...imagePromises]);
+                
+                // Wait an additional moment for smooth transition
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 500);
+            };
+
+            preloadResources();
         }, []);
 
         useEffect(() => {
@@ -231,7 +432,7 @@
                     // Completely hide the video after collapse animation
                     setTimeout(() => {
                         setVideoCollapsed(true);
-                    }, 1000); // Wait for the collapse transition to finish
+                    }, 1000);
                 }, 3000);
                 
                 // Start playing audio after opening animation
@@ -342,9 +543,24 @@
             <>
                 {/* Loading Screen */}
                 {isLoading && (
-                    <div className="loading-screen">
-                        <div className="loader mb-6"></div>
-                        <p className="text-xl tracking-widest text-gray-400">LOADING...</p>
+                    <div className={`loading-screen ${!isLoading ? 'fade-out' : ''}`}>
+                        <div className="film-grain"></div>
+                        <div className="relative">
+                            <div className="camera-lens">
+                                <div className="lens-flare"></div>
+                            </div>
+                        </div>
+                        <div className="progress-container">
+                            <div 
+                                className="progress-bar"
+                                style={{
+                                    width: `${loadingProgress}%`,
+                                    transition: 'width 0.3s ease'
+                                }}
+                            ></div>
+                        </div>
+                        <p className="loading-text">LOADING EXPERIENCE</p>
+                        <p className="text-xs text-gray-600 mt-2">{Math.round(loadingProgress)}%</p>
                     </div>
                 )}
 
@@ -354,7 +570,7 @@
                         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
                     </audio>
 
-                    {/* Opening Video Animation - Completely Disappears After Collapse */}
+                    {/* Opening Video Animation */}
                     {!videoCollapsed && (
                         <div 
                             className="fixed top-0 left-0 right-0 transition-all duration-1000 ease-in-out pointer-events-none overflow-hidden"
@@ -388,11 +604,11 @@
                     >
                         <div className="relative z-10 px-6 max-w-7xl w-full">
                             <div className="flex items-center justify-center gap-8 mb-16">
-                                {/* Portrait Image */}
+                                {/* Portrait Image - Shows when video is collapsing */}
                                 <div 
                                     className="flex-shrink-0 w-28 h-28 rounded-lg overflow-hidden shadow-2xl slide-up-fade"
                                     style={{
-                                        animationDelay: '3.2s',
+                                        animationDelay: '2.8s',
                                         opacity: 0,
                                         backgroundImage: `url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80')`,
                                         backgroundSize: 'cover',
@@ -401,12 +617,12 @@
                                     }}
                                 />
                                 
-                                {/* Name */}
+                                {/* Name - Shows when video is collapsing */}
                                 <div>
                                     <h1 
                                         className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
                                         style={{
-                                            animationDelay: '3.4s',
+                                            animationDelay: '2.9s',
                                             opacity: 0
                                         }}
                                     >
@@ -415,7 +631,7 @@
                                     <h1 
                                         className="text-6xl md:text-7xl font-bold tracking-tighter leading-none shimmer-text slide-up-fade"
                                         style={{
-                                            animationDelay: '3.6s',
+                                            animationDelay: '3.0s',
                                             opacity: 0
                                         }}
                                     >
@@ -425,29 +641,29 @@
                             </div>
                             
                             <p className="text-xl md:text-2xl tracking-wider max-w-3xl mx-auto text-center" style={{ color: '#e5e7eb' }}>
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.8s', opacity: 0 }}>Award-winning</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.9s', opacity: 0 }}>cinematographer</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4s', opacity: 0 }}>specializing</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.1s', opacity: 0 }}>in</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.2s', opacity: 0 }}>narrative</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.3s', opacity: 0 }}>storytelling,</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.4s', opacity: 0 }}>commercial</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.5s', opacity: 0 }}>campaigns,</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.6s', opacity: 0 }}>and</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.7s', opacity: 0 }}>documentary</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.8s', opacity: 0 }}>filmmaking.</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.9s', opacity: 0 }}>Based</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5s', opacity: 0 }}>in</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.1s', opacity: 0 }}>Los</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.2s', opacity: 0 }}>Angeles,</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.3s', opacity: 0 }}>working</span>{' '}
-                                <span className="inline-block slide-up-fade" style={{ animationDelay: '5.4s', opacity: 0 }}>worldwide.</span>
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.1s', opacity: 0 }}>Award-winning</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.2s', opacity: 0 }}>cinematographer</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.3s', opacity: 0 }}>specializing</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.4s', opacity: 0 }}>in</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.5s', opacity: 0 }}>narrative</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.6s', opacity: 0 }}>storytelling,</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.7s', opacity: 0 }}>commercial</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.8s', opacity: 0 }}>campaigns,</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '3.9s', opacity: 0 }}>and</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.0s', opacity: 0 }}>documentary</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.1s', opacity: 0 }}>filmmaking.</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.2s', opacity: 0 }}>Based</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.3s', opacity: 0 }}>in</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.4s', opacity: 0 }}>Los</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.5s', opacity: 0 }}>Angeles,</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.6s', opacity: 0 }}>working</span>{' '}
+                                <span className="inline-block slide-up-fade" style={{ animationDelay: '4.7s', opacity: 0 }}>worldwide.</span>
                             </p>
 
                             <div 
                                 className="mt-16 flex items-center justify-center gap-3 text-sm tracking-widest slide-up-fade"
                                 style={{ 
-                                    animationDelay: '5.6s',
+                                    animationDelay: '4.8s',
                                     opacity: 0,
                                     color: '#d1d5db'
                                 }}
@@ -828,7 +1044,7 @@
                                             <div key={idx} className="w-full">
                                                 <video 
                                                     controls 
-                                                    className="w-full rounded-lg shadow-2xl"
+                                                    className="w-full rounded-lg shadow-2xl project-video"
                                                 >
                                                     <source src={video} type="video/mp4" />
                                                     Your browser does not support the video tag.
