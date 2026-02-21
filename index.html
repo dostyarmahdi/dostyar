@@ -221,7 +221,16 @@
         const audioRef = useRef(null);
 
         useEffect(() => {
-            // Preload all videos and images
+            // Maximum timeout - force loading to complete after 5 seconds
+            const maxLoadingTimeout = setTimeout(() => {
+                console.log("Maximum loading time reached, proceeding...");
+                setLoadingProgress(100);
+                setTimeout(() => {
+                    setIsLoading(false);
+                }, 300);
+            }, 5000);
+
+            // Preload resources
             const preloadResources = async () => {
                 const videoUrls = [
                     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
@@ -243,51 +252,85 @@
 
                 const updateProgress = () => {
                     loadedCount++;
-                    setLoadingProgress((loadedCount / totalResources) * 100);
+                    const progress = (loadedCount / totalResources) * 100;
+                    setLoadingProgress(progress);
                 };
 
-                // Preload videos
+                // Preload videos with timeout
                 const videoPromises = videoUrls.map(url => {
-                    return new Promise((resolve) => {
-                        const video = document.createElement('video');
-                        video.src = url;
-                        video.preload = 'auto';
-                        video.onloadeddata = () => {
-                            updateProgress();
-                            resolve();
-                        };
-                        video.onerror = () => {
-                            updateProgress();
-                            resolve();
-                        };
-                    });
+                    return Promise.race([
+                        new Promise((resolve) => {
+                            const video = document.createElement('video');
+                            video.src = url;
+                            video.preload = 'metadata'; // Changed from 'auto' to 'metadata' for faster loading
+                            video.onloadedmetadata = () => {
+                                updateProgress();
+                                resolve();
+                            };
+                            video.onerror = () => {
+                                console.log(`Video failed to load: ${url}`);
+                                updateProgress();
+                                resolve();
+                            };
+                        }),
+                        // Timeout after 2 seconds per video
+                        new Promise((resolve) => {
+                            setTimeout(() => {
+                                console.log(`Video timeout: ${url}`);
+                                updateProgress();
+                                resolve();
+                            }, 2000);
+                        })
+                    ]);
                 });
 
-                // Preload images
+                // Preload images with timeout
                 const imagePromises = imageUrls.map(url => {
-                    return new Promise((resolve) => {
-                        const img = new Image();
-                        img.src = url;
-                        img.onload = () => {
-                            updateProgress();
-                            resolve();
-                        };
-                        img.onerror = () => {
-                            updateProgress();
-                            resolve();
-                        };
-                    });
+                    return Promise.race([
+                        new Promise((resolve) => {
+                            const img = new Image();
+                            img.src = url;
+                            img.onload = () => {
+                                updateProgress();
+                                resolve();
+                            };
+                            img.onerror = () => {
+                                console.log(`Image failed to load: ${url}`);
+                                updateProgress();
+                                resolve();
+                            };
+                        }),
+                        // Timeout after 1 second per image
+                        new Promise((resolve) => {
+                            setTimeout(() => {
+                                console.log(`Image timeout: ${url}`);
+                                updateProgress();
+                                resolve();
+                            }, 1000);
+                        })
+                    ]);
                 });
 
-                await Promise.all([...videoPromises, ...imagePromises]);
-                
-                // Wait an additional moment for smooth transition
-                setTimeout(() => {
+                try {
+                    await Promise.all([...videoPromises, ...imagePromises]);
+                    clearTimeout(maxLoadingTimeout);
+                    
+                    // Wait a moment for smooth transition
+                    setTimeout(() => {
+                        setIsLoading(false);
+                    }, 300);
+                } catch (error) {
+                    console.error("Error loading resources:", error);
+                    clearTimeout(maxLoadingTimeout);
                     setIsLoading(false);
-                }, 500);
+                }
             };
 
             preloadResources();
+
+            return () => {
+                clearTimeout(maxLoadingTimeout);
+            };
         }, []);
 
         useEffect(() => {
@@ -968,4 +1011,3 @@
 
 </body>
 </html>
-
